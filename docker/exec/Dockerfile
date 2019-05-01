@@ -12,6 +12,7 @@ WORKDIR /data
 
 RUN set -xe && apk add --no-cache php7 git zip unzip curl wget ca-certificates openssl nodejs-npm gnupg sudo acl sqlite yarn bash
 RUN set -xe && apk add --no-cache \
+    php7-pdo_pgsql \
     php7-apcu \
     php7-common \
     php7-ctype \
@@ -36,7 +37,6 @@ RUN set -xe && apk add --no-cache \
     php7-xml \
     php7-xmlwriter \
     php7-zip
-RUN set -xe && apk add --no-cache ffmpeg
 RUN set -xe && apk add --no-cache rsync openssh
 
 COPY run.sh /usr/local/bin/run.sh

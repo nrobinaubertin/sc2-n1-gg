@@ -38,5 +38,12 @@ pathToProject=$(pwd)
 cd "docker/exec" || exit
 
 if sudo docker build -t "exec" .; then
-    sudo docker run --rm -it -e UID="$(id -u)" -e GID="$(id -g)" -e USER="$(id -un)" -e GROUP="$(id -gn)" -v "${pathToProject}":/data --name "exec" "exec" "$@"
+    sudo docker run --rm -it \
+        -e UID="$(id -u)" \
+        -e GID="$(id -g)" \
+        -e USER="$(id -un)" \
+        -e GROUP="$(id -gn)" \
+        -v "${pathToProject}":/data \
+        --network sc2-n1-gg_sc2_api \
+        --name "exec" "exec" "$@"
 fi

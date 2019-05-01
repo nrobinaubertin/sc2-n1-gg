@@ -1,4 +1,12 @@
 version: "3.7"
+
+networks:
+  sc2_api:
+    driver: "bridge"
+    ipam:
+      config:
+        - subnet: "172.20.0.0/16"
+
 services:
   nginx:
     image: "nginx:1.15"
@@ -8,19 +16,19 @@ services:
       - "./:/var/www/"
       - "./docker/nginx.conf:/etc/nginx/nginx.conf:ro"
     networks:
-      - "sc2-api"
+      sc2_api:
+        ipv4_address: "172.20.0.2"
   php:
     image: "php:7.3-fpm-stretch"
     volumes:
       - "./:/var/www/"
     networks:
-      - "sc2-api"
+      sc2_api:
+        ipv4_address: "172.20.0.3"
   postgres:
     image: "postgres:11.2"
     environment:
       POSTGRES_PASSWORD: "plop"
     networks:
-      - "sc2-api"
-
-networks:
-  sc2-api:
+      sc2_api:
+        ipv4_address: "172.20.0.4"
