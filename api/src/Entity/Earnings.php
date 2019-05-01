@@ -3,12 +3,18 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Earnings
  *
  * @ORM\Table(name="earnings", indexes={@ORM\Index(name="earnings_event_id", columns={"event_id"}), @ORM\Index(name="earnings_player_id", columns={"player_id"})})
  * @ORM\Entity
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"}
+ * )
  */
 class Earnings
 {
@@ -57,6 +63,7 @@ class Earnings
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="event_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $event;
 
@@ -67,8 +74,86 @@ class Earnings
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="player_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $player;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEarnings(): ?int
+    {
+        return $this->earnings;
+    }
+
+    public function setEarnings(?int $earnings): self
+    {
+        $this->earnings = $earnings;
+
+        return $this;
+    }
+
+    public function getOrigearnings()
+    {
+        return $this->origearnings;
+    }
+
+    public function setOrigearnings($origearnings): self
+    {
+        $this->origearnings = $origearnings;
+
+        return $this;
+    }
+
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(string $currency): self
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getPlacement(): ?int
+    {
+        return $this->placement;
+    }
+
+    public function setPlacement(int $placement): self
+    {
+        $this->placement = $placement;
+
+        return $this;
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): self
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
+    }
+
+    public function setPlayer(?Player $player): self
+    {
+        $this->player = $player;
+
+        return $this;
+    }
 
 
 }

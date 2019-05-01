@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Message
@@ -50,6 +51,7 @@ class Message
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="event_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $event;
 
@@ -60,6 +62,7 @@ class Message
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $group;
 
@@ -70,6 +73,7 @@ class Message
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="match_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $match;
 
@@ -82,6 +86,95 @@ class Message
      * })
      */
     private $player;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    public function getParams(): ?string
+    {
+        return $this->params;
+    }
+
+    public function setParams(string $params): self
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): self
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?Group $group): self
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    public function getMatch(): ?Match
+    {
+        return $this->match;
+    }
+
+    public function setMatch(?Match $match): self
+    {
+        $this->match = $match;
+
+        return $this;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
+    }
+
+    public function setPlayer(?Player $player): self
+    {
+        $this->player = $player;
+
+        return $this;
+    }
 
 
 }

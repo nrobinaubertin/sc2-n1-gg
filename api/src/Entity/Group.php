@@ -3,12 +3,18 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Group
  *
  * @ORM\Table(name="group", indexes={@ORM\Index(name="group_name_like", columns={"name"}), @ORM\Index(name="group_is_team", columns={"is_team"}), @ORM\Index(name="group_name", columns={"name"}), @ORM\Index(name="group_active", columns={"active"})})
  * @ORM\Entity
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"}
+ * )
  */
 class Group
 {
@@ -105,6 +111,155 @@ class Group
      * @ORM\Column(name="meanrating", type="float", precision=10, scale=0, nullable=true)
      */
     private $meanrating;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getShortname(): ?string
+    {
+        return $this->shortname;
+    }
+
+    public function setShortname(?string $shortname): self
+    {
+        $this->shortname = $shortname;
+
+        return $this;
+    }
+
+    public function getScoreak(): ?float
+    {
+        return $this->scoreak;
+    }
+
+    public function setScoreak(?float $scoreak): self
+    {
+        $this->scoreak = $scoreak;
+
+        return $this;
+    }
+
+    public function getScorepl(): ?float
+    {
+        return $this->scorepl;
+    }
+
+    public function setScorepl(?float $scorepl): self
+    {
+        $this->scorepl = $scorepl;
+
+        return $this;
+    }
+
+    public function getFounded(): ?\DateTimeInterface
+    {
+        return $this->founded;
+    }
+
+    public function setFounded(?\DateTimeInterface $founded): self
+    {
+        $this->founded = $founded;
+
+        return $this;
+    }
+
+    public function getDisbanded(): ?\DateTimeInterface
+    {
+        return $this->disbanded;
+    }
+
+    public function setDisbanded(?\DateTimeInterface $disbanded): self
+    {
+        $this->disbanded = $disbanded;
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getHomepage(): ?string
+    {
+        return $this->homepage;
+    }
+
+    public function setHomepage(?string $homepage): self
+    {
+        $this->homepage = $homepage;
+
+        return $this;
+    }
+
+    public function getLpName(): ?string
+    {
+        return $this->lpName;
+    }
+
+    public function setLpName(?string $lpName): self
+    {
+        $this->lpName = $lpName;
+
+        return $this;
+    }
+
+    public function getIsTeam(): ?bool
+    {
+        return $this->isTeam;
+    }
+
+    public function setIsTeam(bool $isTeam): self
+    {
+        $this->isTeam = $isTeam;
+
+        return $this;
+    }
+
+    public function getIsManual(): ?bool
+    {
+        return $this->isManual;
+    }
+
+    public function setIsManual(bool $isManual): self
+    {
+        $this->isManual = $isManual;
+
+        return $this;
+    }
+
+    public function getMeanrating(): ?float
+    {
+        return $this->meanrating;
+    }
+
+    public function setMeanrating(?float $meanrating): self
+    {
+        $this->meanrating = $meanrating;
+
+        return $this;
+    }
 
 
 }

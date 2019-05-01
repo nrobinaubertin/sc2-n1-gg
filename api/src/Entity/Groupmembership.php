@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Groupmembership
@@ -57,6 +58,7 @@ class Groupmembership
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $group;
 
@@ -67,8 +69,86 @@ class Groupmembership
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="player_id", referencedColumnName="id")
      * })
+     * @MaxDepth(1)
      */
     private $player;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getStart(): ?\DateTimeInterface
+    {
+        return $this->start;
+    }
+
+    public function setStart(?\DateTimeInterface $start): self
+    {
+        $this->start = $start;
+
+        return $this;
+    }
+
+    public function getEnd(): ?\DateTimeInterface
+    {
+        return $this->end;
+    }
+
+    public function setEnd(?\DateTimeInterface $end): self
+    {
+        $this->end = $end;
+
+        return $this;
+    }
+
+    public function getCurrent(): ?bool
+    {
+        return $this->current;
+    }
+
+    public function setCurrent(bool $current): self
+    {
+        $this->current = $current;
+
+        return $this;
+    }
+
+    public function getPlaying(): ?bool
+    {
+        return $this->playing;
+    }
+
+    public function setPlaying(bool $playing): self
+    {
+        $this->playing = $playing;
+
+        return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?Group $group): self
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
+    }
+
+    public function setPlayer(?Player $player): self
+    {
+        $this->player = $player;
+
+        return $this;
+    }
 
 
 }
