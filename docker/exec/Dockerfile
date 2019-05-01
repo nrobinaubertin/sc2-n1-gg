@@ -1,16 +1,11 @@
 FROM alpine:3.9
-RUN apk add --no-cache -U su-exec tini
-ENTRYPOINT ["/sbin/tini", "--"]
-
-ENV UID=791
-ENV GID=791
-ENV USER=exec
-ENV GROUP=exec
 
 VOLUME /data
 WORKDIR /data
 
-RUN set -xe && apk add --no-cache php7 git zip unzip curl wget ca-certificates openssl nodejs-npm gnupg sudo acl sqlite yarn bash
+RUN set -xe && apk add --no-cache \
+        php7 git zip unzip curl wget ca-certificates openssl \
+        nodejs-npm gnupg sudo acl sqlite yarn bash postgresql-client
 RUN set -xe && apk add --no-cache \
     php7-pdo_pgsql \
     php7-apcu \
@@ -39,7 +34,4 @@ RUN set -xe && apk add --no-cache \
     php7-zip
 RUN set -xe && apk add --no-cache rsync openssh
 
-COPY run.sh /usr/local/bin/run.sh
-RUN chmod +x /usr/local/bin/run.sh
-
-ENTRYPOINT ["run.sh"]
+CMD ["sleep", "365d"]

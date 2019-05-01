@@ -8,6 +8,7 @@ networks:
         - subnet: "172.20.0.0/16"
 
 services:
+
   nginx:
     image: "nginx:1.15"
     ports:
@@ -18,6 +19,7 @@ services:
     networks:
       sc2_api:
         ipv4_address: "172.20.0.2"
+
   php:
     image: "php:7.3-fpm-stretch"
     volumes:
@@ -25,6 +27,8 @@ services:
     networks:
       sc2_api:
         ipv4_address: "172.20.0.3"
+    user: "${CURRENT_USER}"
+
   postgres:
     image: "postgres:11.2"
     environment:
@@ -32,3 +36,13 @@ services:
     networks:
       sc2_api:
         ipv4_address: "172.20.0.4"
+
+  exec:
+    build: "./docker/exec"
+    volumes:
+      - "./:/data"
+    user: "${CURRENT_USER}"
+    networks:
+      sc2_api:
+        ipv4_address: "172.20.0.9"
+
