@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
@@ -10,6 +11,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
  *
  * @ORM\Table(name="period", indexes={@ORM\Index(name="period_start", columns={"start"}), @ORM\Index(name="period_needs_recompute", columns={"needs_recompute"}), @ORM\Index(name="period_computed", columns={"computed"}), @ORM\Index(name="period_end", columns={"end"})})
  * @ORM\Entity
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"}
+ * )
  */
 class Period
 {

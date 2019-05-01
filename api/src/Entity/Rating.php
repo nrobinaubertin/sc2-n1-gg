@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
@@ -10,6 +11,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
  *
  * @ORM\Table(name="rating", indexes={@ORM\Index(name="rating_prev_id", columns={"prev_id"}), @ORM\Index(name="rating_player_id", columns={"player_id"}), @ORM\Index(name="rating_period_id", columns={"period_id"})})
  * @ORM\Entity
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"}
+ * )
  */
 class Rating
 {

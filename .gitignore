@@ -1,4 +1,4 @@
 .composer
 composer.phar
-*.sql
+aligulac.sql
 .bash_history
