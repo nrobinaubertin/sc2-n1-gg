@@ -40,7 +40,7 @@ services:
   exec:
     build: "./docker/exec"
     volumes:
-      - "./:/data"
+      - "./:/app"
     user: "${CURRENT_USER}"
     networks:
       sc2_api:

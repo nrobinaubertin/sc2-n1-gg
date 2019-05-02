@@ -19,9 +19,6 @@ RUN set -xe \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -rf /var/lib/apt/lists/*
 
-VOLUME /data
-WORKDIR /data
-
 # Install nodjs (used in yarn)
 ARG NODE_VERSION=8.15.1
 RUN set -xe \
@@ -42,5 +39,12 @@ RUN set -xe \
 	&& ln -s "/opt/yarn-v${YARN_VERSION}/bin/yarn" /usr/local/bin/yarn \
 	&& ln -s "/opt/yarn-v${YARN_VERSION}/bin/yarnpkg" /usr/local/bin/yarnpkg \
 	&& rm "yarn-v${YARN_VERSION}.tar.gz"
+
+VOLUME /app
+WORKDIR /app
+
+RUN set -xe \
+	&& mkdir /.composer /.cache /.yarn \
+	&& chmod 777 /.composer /.cache /.yarn
 
 CMD ["sleep", "365d"]
