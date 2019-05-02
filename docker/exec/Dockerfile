@@ -1,37 +1,46 @@
-FROM alpine:3.9
+FROM php:7.3-fpm-stretch
+
+ARG XDEBUG_VERSION=2.7.0
+RUN set -xe \
+    && buildDepts="g++" \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        $buildDeps \
+        libicu-dev \
+        libpcre3-dev \
+        libpq-dev \
+        libxml2-dev \
+        libzip-dev \
+        zlib1g-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install mbstring zip soap pdo_pgsql intl opcache \
+    && pecl install xdebug-${XDEBUG_VERSION} \
+    && docker-php-ext-enable xdebug \
+    && apt-get purge -y --auto-remove $buildDeps \
+    && rm -rf /var/lib/apt/lists/*
 
 VOLUME /data
 WORKDIR /data
 
-RUN set -xe && apk add --no-cache \
-        php7 git zip unzip curl wget ca-certificates openssl \
-        nodejs-npm gnupg sudo acl sqlite yarn bash postgresql-client
-RUN set -xe && apk add --no-cache \
-    php7-pdo_pgsql \
-    php7-apcu \
-    php7-common \
-    php7-ctype \
-    php7-curl \
-    php7-dom \
-    php7-fileinfo \
-    php7-fpm \
-    php7-gd \
-    php7-iconv \
-    php7-imagick \
-    php7-intl \
-    php7-json \
-    php7-mbstring \
-    php7-opcache \
-    php7-openssl \
-    php7-pdo_sqlite \
-    php7-phar \
-    php7-posix \
-    php7-session \
-    php7-simplexml \
-    php7-tokenizer \
-    php7-xml \
-    php7-xmlwriter \
-    php7-zip
-RUN set -xe && apk add --no-cache rsync openssh
+# Install nodjs (used in yarn)
+ARG NODE_VERSION=8.15.1
+RUN set -xe \
+	&& buildDeps="xz-utils" && ARCH="x64" \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates curl wget dirmngr $buildDeps \
+	&& curl -fsSLO --compressed "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" \
+	&& tar -xJf "node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
+	&& rm "node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" \
+	&& ln -s /usr/local/bin/node /usr/local/bin/nodjs \
+	&& apt-get purge -y --auto-remove $buildDepts \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Install yarn (used in symfony encore)
+ARG YARN_VERSION=1.15.2
+RUN set -xe \
+	&& curl -fsSLO --compressed "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz" \
+	&& tar -xzf "yarn-v${YARN_VERSION}.tar.gz" -C /opt/ \
+	&& ln -s "/opt/yarn-v${YARN_VERSION}/bin/yarn" /usr/local/bin/yarn \
+	&& ln -s "/opt/yarn-v${YARN_VERSION}/bin/yarnpkg" /usr/local/bin/yarnpkg \
+	&& rm "yarn-v${YARN_VERSION}.tar.gz"
 
 CMD ["sleep", "365d"]
