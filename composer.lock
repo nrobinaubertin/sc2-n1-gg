@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "486f7619c7640d05b4106ed017a00097",
+    "content-hash": "ec03b26612d701b0b9a6ed0c52621263",
     "packages": [
         {
             "name": "api-platform/admin-pack",
@@ -1859,7 +1859,7 @@
         },
         {
             "name": "symfony/asset",
-            "version": "v4.2.7",
+            "version": "v4.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
