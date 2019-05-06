@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <h3 class="display-6 mr-3">{{ player.tag }}</h3>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if nav_active == "summary"%} active{% endif %}" href="{{ base_url }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if nav_active == "results"%} active{% endif %}" href="{{ base_url }}/results">Match history</a>
+    </li>
+</ul>

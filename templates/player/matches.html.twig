@@ -1,0 +1,62 @@
+<table class="table table-striped mb-2">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Player</th>
+            <th scope="col">Score</th>
+            <th scope="col">Opponent</th>
+            <th scope="col">Match type</th>
+            <th scope="col">Event</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for match in matches %}
+        <tr>
+            <td>{{ match.date|date('Y-m-d') }}</td>
+            {% if match.pla.id == player.id %}
+            <td>
+                {% if match.sca > match.scb %}
+                <strong>
+                {% endif %}
+                    {{ match.pla.tag }}
+                {% if match.sca > match.scb %}
+                </strong>
+                {% endif %}
+            </td>
+            <td>{{ match.sca }} — {{ match.scb }}</td>
+            <td>
+                {% if match.scb > match.sca %}
+                <strong>
+                {% endif %}
+                    {{ match.plb.tag }}
+                {% if match.scb > match.sca %}
+                </strong>
+                {% endif %}
+            </td>
+            {% else %}
+            <td>
+                {% if match.scb > match.sca %}
+                <strong>
+                {% endif %}
+                    {{ match.plb.tag }}
+                {% if match.scb > match.sca %}
+                </strong>
+                {% endif %}
+            </td>
+            <td>{{ match.scb }} — {{ match.sca }}</td>
+            <td>
+                {% if match.sca > match.scb %}
+                <strong>
+                {% endif %}
+                    {{ match.pla.tag }}
+                {% if match.sca > match.scb %}
+                </strong>
+                {% endif %}
+            </td>
+            {% endif %}
+            <td>{% if match.offline == true %}offline{% else %}online{% endif %}</td>
+            <td>{{ match.eventobj.fullname|slice(0, 60) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

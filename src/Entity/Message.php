@@ -56,15 +56,15 @@ class Message
     private $event;
 
     /**
-     * @var \Group
+     * @var \Team
      *
-     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\ManyToOne(targetEntity="Team")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      * })
      * @MaxDepth(1)
      */
-    private $group;
+    private $team;
 
     /**
      * @var \Match
@@ -140,14 +140,14 @@ class Message
         return $this;
     }
 
-    public function getGroup(): ?Group
+    public function getTeam(): ?Team
     {
-        return $this->group;
+        return $this->team;
     }
 
-    public function setGroup(?Group $group): self
+    public function setTeam(?Team $team): self
     {
-        $this->group = $group;
+        $this->team = $team;
 
         return $this;
     }

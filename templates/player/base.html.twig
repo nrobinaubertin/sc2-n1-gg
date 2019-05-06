@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ player.tag }}{% endblock %}
+{% block body %}
+    <div class="container">
+        {% include 'player/nav.html.twig' %}
+        <div clas="container">
+        {% if nav_active == "results" %}
+            {% include 'player/results.html.twig' %}
+        {% else %}
+            {% include 'player/summary.html.twig' %}
+        {% endif %}
+    </div>
+{% endblock %}

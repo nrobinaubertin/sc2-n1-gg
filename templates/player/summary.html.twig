@@ -1,0 +1,109 @@
+<div class="container">
+    <h3>Facts:</h3>
+    <div class="row mb-2">
+        <div class="col">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th scope="col">Race</th>
+                        <td>{{ player.race }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Country</th>
+                        <td>{{ player.country }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Full Name</th>
+                        <td>{{ player.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Birthday</th>
+                        <td>{{ player.birthday|date('Y-m-d') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th scope="col">First Match</th>
+                        <td>{{ (matches|last).date|date('Y-m-d') }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Last Match</th>
+                        <td>{{ matches[0].date|date('Y-m-d') }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Total earnings</th>
+                        <td>${{ total_earnings|number_format(0, "", ",") }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Matches/Map played</th>
+                        <td>{{ matches|length }} / {{ total_maps }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Winrate Matches/Maps</th>
+                        <td>
+                            {{ (100 * match_wins / (matches|length))|round(1, 'floor') }}%
+                            /
+                            {{ (100 * map_wins / total_maps)|round(1, 'floor') }}%
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="chart" class="container mb-2"></div>
+    <h3>Most recent results:</h3>
+    {% include 'player/matches.html.twig' with {'matches': matches|slice(0, 10)} %}
+</div>
+<script>
+    $(document).ready(function() {
+        var myChart = Highcharts.chart('chart', {
+            chart: {type: 'line'},
+            title: {text: 'Number of matches each month'},
+            plotOptions: {
+                column: {
+                    pointStart: Date.UTC({{ (matches|last).date|date('Y, m, d') }})
+                },
+                series: {
+                    animation: false
+                },
+            },
+            xAxis: {
+                type: 'datetime',
+            },
+            yAxis: {
+                title: "",
+                gridLineWidth: 1,
+            },
+            series: [
+                {
+                    name: "Matches",
+                    color: 'rgba(0, 0, 0, 0.5)',
+                    borderWidth: 0,
+                    enableMouseTracking: true,
+                    type: 'column',
+                    tooltip: {
+                        pointFormat: 'score: {point.wins} - {point.losses}',
+                    },
+                    data: [
+                        {% for timestamp, data in matches_month %}
+                        {
+                            x:{{ timestamp}},
+                            y:{{ data.total_matches }},
+                            wins: {{ data.total_wins }},
+                            losses: {{ data.total_matches - data.total_wins }},
+                            {% if data.total_matches > 0 %}
+                            color: 'rgba(40, 40, 40, {{ max(0.1, ((data.total_wins)/(data.total_matches))|round(1, 'floor')) }})',
+                            {% endif %}
+                        },
+                        {% endfor %}
+                    ],
+                },
+            ],
+            credits: {enabled: false},
+        });
+    });
+</script>
