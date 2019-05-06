@@ -14,12 +14,18 @@
                     </tr>
                     <tr>
                         <th scope="col">Full Name</th>
-                        <td>{{ player.name }}</td>
+                        <td>{{ player.name }}{% if player.romanizedName %} ({{ player.romanizedName}}){% endif %}</td>
                     </tr>
                     <tr>
                         <th scope="col">Birthday</th>
-                        <td>{{ player.birthday|date('Y-m-d') }}</td>
+                        <td>{{ player.birthday|date('Y-m-d') }} <small>({{ player_age }} years)</small></td>
                     </tr>
+                    {% if player.lpName %}
+                    <tr>
+                        <th scope="col">Liquipedia</th>
+                        <td><a href="https://liquipedia.net/starcraft2/{{ player.lpName }}">https://liquipedia.net/starcraft2/{{ player.lpName }}</a></td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -96,7 +102,7 @@
                             wins: {{ data.total_wins }},
                             losses: {{ data.total_matches - data.total_wins }},
                             {% if data.total_matches > 0 %}
-                            color: 'rgba(40, 40, 40, {{ max(0.1, ((data.total_wins)/(data.total_matches))|round(1, 'floor')) }})',
+                            color: 'rgba(20, 20, 20, {{ 0.1 + (((data.total_wins)/(2*data.total_matches))|round(1, 'floor'))*2 }})',
                             {% endif %}
                         },
                         {% endfor %}

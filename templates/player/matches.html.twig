@@ -55,7 +55,7 @@
             </td>
             {% endif %}
             <td>{% if match.offline == true %}offline{% else %}online{% endif %}</td>
-            <td>{{ match.eventobj.fullname|slice(0, 60) }}</td>
+            <td>{% if match.eventobj %}{{ match.eventobj.fullname|slice(0, 60) }}{% endif %}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -232,6 +232,9 @@ class Player extends AbstractController
             }
         }
 
+        $player_age = $player->getBirthday()->diff(new \DateTime())->format('%a');
+        $player_age = floor(intval($player_age)/365);
+
 		return $this->render('player/base.html.twig', [
 			'player' => $player,
             'matches' => $matches,
@@ -242,6 +245,7 @@ class Player extends AbstractController
             'matches_month' => $matches_month,
             'nav_active' => 'summary',
             'base_url' => '/players/' . $player->getId(),
+            'player_age' => $player_age,
 		]);
     }
 }
