@@ -48,6 +48,10 @@
     }
 }
 
+body, html {
+    height: 100%;
+}
+
 .picto {
     width: 20px;
     height: 20px;
@@ -62,4 +66,9 @@
     width: 5rem;
     text-align: center;
     flex-shrink: 0;
+}
+
+.page-container {
+    min-height: 100vh;
+    background: whitesmoke;
 }

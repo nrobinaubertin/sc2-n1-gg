@@ -5,7 +5,7 @@
         {% if match.pla.id == player.id %}
             <span class="text-right w-100 mr-1">
                 {% if match.sca > match.scb %} <strong> {% endif %}
-                {{ match.pla.tag }}
+                    <a href="/players/{{ match.pla.id}}" class="text-body">{{ match.pla.tag }}</a>
                 {% if match.sca > match.scb %} </strong> {% endif %}
                 <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.pla.race, 'long': false} %}</span>
             </span>
@@ -13,13 +13,13 @@
             <span class="text-left w-100 ml-1">
                 <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.plb.race, 'long': false} %}</span>
                 {% if match.scb > match.sca %} <strong> {% endif %}
-                {{ match.plb.tag }}
+                    <a href="/players/{{ match.plb.id }}" class="text-body">{{ match.plb.tag }}</a>
                 {% if match.scb > match.sca %} </strong> {% endif %}
             </span>
         {% else %}
             <span class="text-right w-100 mr-1">
                 {% if match.scb > match.sca %} <strong> {% endif %}
-                {{ match.plb.tag }}
+                    <a href="/players/{{ match.plb.id }}" class="text-body">{{ match.plb.tag }}</a>
                 {% if match.scb > match.sca %} </strong> {% endif %}
                 <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.plb.race, 'long': false} %}</span>
             </span>
@@ -27,7 +27,7 @@
             <span class="text-left w-100 ml-1">
                 <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.pla.race, 'long': false} %}</span>
                 {% if match.sca > match.scb %} <strong> {% endif %}
-                {{ match.pla.tag }}
+                    <a href="/players/{{ match.pla.id }}" class="text-body">{{ match.pla.tag }}</a>
                 {% if match.sca > match.scb %} </strong> {% endif %}
             </span>
         {% endif %}

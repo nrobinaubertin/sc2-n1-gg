@@ -1,0 +1,35 @@
+{% macro getRegionalIndicator(letter) %}
+    {%- if letter == "A" -%}&#x1f1e6;{%- endif -%}
+    {%- if letter == "B" -%}&#x1f1e7;{%- endif -%}
+    {%- if letter == "C" -%}&#x1f1e8;{%- endif -%}
+    {%- if letter == "D" -%}&#x1f1e9;{%- endif -%}
+    {%- if letter == "E" -%}&#x1f1ea;{%- endif -%}
+    {%- if letter == "F" -%}&#x1f1eb;{%- endif -%}
+    {%- if letter == "G" -%}&#x1f1ec;{%- endif -%}
+    {%- if letter == "H" -%}&#x1f1ed;{%- endif -%}
+    {%- if letter == "I" -%}&#x1f1ee;{%- endif -%}
+    {%- if letter == "J" -%}&#x1f1ef;{%- endif -%}
+    {%- if letter == "K" -%}&#x1f1f0;{%- endif -%}
+    {%- if letter == "L" -%}&#x1f1f1;{%- endif -%}
+    {%- if letter == "M" -%}&#x1f1f2;{%- endif -%}
+    {%- if letter == "N" -%}&#x1f1f3;{%- endif -%}
+    {%- if letter == "O" -%}&#x1f1f4;{%- endif -%}
+    {%- if letter == "P" -%}&#x1f1f5;{%- endif -%}
+    {%- if letter == "Q" -%}&#x1f1f6;{%- endif -%}
+    {%- if letter == "R" -%}&#x1f1f7;{%- endif -%}
+    {%- if letter == "S" -%}&#x1f1f8;{%- endif -%}
+    {%- if letter == "T" -%}&#x1f1f9;{%- endif -%}
+    {%- if letter == "U" -%}&#x1f1fa;{%- endif -%}
+    {%- if letter == "V" -%}&#x1f1fb;{%- endif -%}
+    {%- if letter == "W" -%}&#x1f1fc;{%- endif -%}
+    {%- if letter == "Y" -%}&#x1f1fd;{%- endif -%}
+    {%- if letter == "X" -%}&#x1f1fe;{%- endif -%}
+    {%- if letter == "Z" -%}&#x1f1ff;{%- endif -%}
+{% endmacro %}
+
+{% macro getFlag(flag) %}
+    {% import _self as flags %}
+    {%- for letter in flag|split('') -%}
+        {{- flags.getRegionalIndicator(letter) }}
+    {%- endfor -%}
+{% endmacro %}

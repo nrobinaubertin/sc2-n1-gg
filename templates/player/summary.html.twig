@@ -1,3 +1,4 @@
+{% import 'flags.html.twig' as flags %}
 <div class="container">
     <h3>Facts:</h3>
     <div class="row mb-2">
@@ -6,12 +7,12 @@
                 <tbody>
                     <tr>
                         <th scope="col">Race</th>
-                        <td>{{ player.race }}</td>
+                        <td>{% include 'player/race.html.twig' with {'race': player.race, 'long': true} %}</td>
                     </tr>
                     {% if player.country %}
                     <tr>
                         <th scope="col">Country</th>
-                        <td>{{ player.country }}</td>
+                        <td>{{ player.country }} {{ flags.getFlag(player.country) }}</td>
                     </tr>
                     {% endif %}
                     {% if player.name %}

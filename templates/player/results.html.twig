@@ -94,9 +94,9 @@
     <div class="text-center">
         Under these filters, {{ player.tag }} is
         <strong>{{ results.map_wins }}-{{ results.total_maps - results.map_wins }}</strong>
-        <small>({{ (100 * results.map_wins / results.total_maps)|round(1, 'floor') }}%)</small> in games and
+        <small class="text-muted">({{ (100 * results.map_wins / results.total_maps)|round(1, 'floor') }}%)</small> in games and
         <strong>{{ results.match_wins }}-{{ results.total_matches - results.match_wins }}</strong>
-        <small>({{ (100 * results.match_wins / results.total_matches)|round(1, 'floor') }}%)</small> in matches.
+        <small class="text-muted">({{ (100 * results.match_wins / results.total_matches)|round(1, 'floor') }}%)</small> in matches.
     </div>
     {% include 'player/matches.html.twig' with {'matches': false, 'events': results.events} %}
 {% else %}
