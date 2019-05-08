@@ -64,26 +64,40 @@ class Player extends AbstractController
         }
         
         $date_query = '1 = 1';
-        if (!empty($date_start = $request->get('date_start'))) {
-            $date_query .= ' AND m.date >= :date_start';
+        if (!empty($after = $request->get('after'))) {
+            $date_query .= ' AND m.date >= :after';
         }
-        if (!empty($date_end = $request->get('date_end'))) {
-            $date_query .= ' AND m.date <= :date_end';
+        if (!empty($before = $request->get('before'))) {
+            $date_query .= ' AND m.date <= :before';
         }
 
         $opponent_races = [];
-        if (empty($request->get('zerg')) || $request->get('zerg') == 'on') {
-            $opponent_races[] = 'Z';
+        if (!empty($race = $request->get('race'))) {
+            // compatibility with aligulac
+            foreach (str_split($race) as $char) {
+                $opponent_races[] = strtoupper($char);
+            }
+        } else {
+            if (empty($request->get('zerg')) || $request->get('zerg') == 'on') {
+                $opponent_races[] = 'Z';
+            }
+            if (empty($request->get('terran')) || $request->get('terran') == 'on') {
+                $opponent_races[] = 'T';
+            }
+            if (empty($request->get('protoss')) || $request->get('protoss') == 'on') {
+                $opponent_races[] = 'P';
+            }
         }
-        if (empty($request->get('terran')) || $request->get('terran') == 'on') {
-            $opponent_races[] = 'T';
-        }
-        if (empty($request->get('protoss')) || $request->get('protoss') == 'on') {
-            $opponent_races[] = 'P';
+
+        if (!empty($request->get('offline'))) {
+            // compatibility with aligulac
+            $match_type = $request->get('offline');
+        } else {
+            $match_type = $request->get('match_type');
         }
 
         $match_type_query = '1 = 0'; // SQL hack to simplify construction of the query
-        switch ($match_type = $request->get('match_type')) {
+        switch ($match_type) {
             case 'offline':
                 $match_type_query .= ' OR m.offline = TRUE';
                 break;
@@ -94,80 +108,104 @@ class Player extends AbstractController
                 $match_type_query .= ' OR 1 = 1';
         }
         
+        // compatibility with aligulac
+        $bestof = $request->get('bestof');
+
         $match_format = [];
         $match_format_query = '1 = 0'; // SQL hack to simplify construction of the query
-        if (empty($request->get('BO1')) || $request->get('BO1') == 'on') {
+        if (
+            empty($bestof) && (
+                empty($request->get('BO1'))
+                || $request->get('BO1') == 'on'
+            )
+            || $bestof == "all"
+        ) {
             $match_format[] = 'BO1';
             $match_format_query .= ' OR ((m.sca = 1 OR m.scb = 1) AND (m.sca + m.scb < 2))';
         }
-        if (empty($request->get('BO3')) || $request->get('BO3') == 'on') {
+        if (
+            empty($bestof) && (
+                empty($request->get('BO3'))
+                || $request->get('BO3') == 'on'
+            )
+            || $bestof == "all"
+            || $bestof == "3"
+        ) {
             $match_format[] = 'BO3';
             $match_format_query .= ' OR ((m.sca = 2 OR m.scb = 2) AND (m.sca + m.scb < 4))';
         }
-        if (empty($request->get('BO5')) || $request->get('BO5') == 'on') {
+        if (
+            empty($bestof) && (
+                empty($request->get('BO5'))
+                || $request->get('BO5') == 'on'
+            )
+            || $bestof == "all"
+            || $bestof == "3"
+            || $bestof == "5"
+        ) {
             $match_format[] = 'BO5';
             $match_format_query .= ' OR ((m.sca = 3 OR m.scb = 3) AND (m.sca + m.scb < 6))';
         }
-        if (empty($request->get('BO7plus')) || $request->get('BO7plus') == 'on') {
+        if (
+            empty($bestof) && (
+                empty($request->get('BO7plus'))
+                || $request->get('BO7plus') == 'on'
+            )
+            || $bestof == "all"
+            || $bestof == "3"
+            || $bestof == "5"
+        ) {
             $match_format[] = 'BO7plus';
             $match_format_query .= ' OR (m.sca > 6 OR m.scb > 6)';
+        }
+
+        $event_query = '1 = 1';
+        $event_join = '';
+        if ($event = $request->get('event')) {
+            $event_join = 'INNER JOIN m.eventobj e';
+            $event_query .= ' AND lower(e.fullname) LIKE lower(:event)';
         }
 
         $query = $this->em->createQuery(
             'SELECT m
             FROM App\Entity\Match AS m
+            '.$event_join.'
             WHERE (
                 (m.pla = :id AND EXISTS (SELECT ob.race FROM App\Entity\Player AS ob WHERE ob.id = m.plb AND ob.race IN (:opponent_races)))
-                OR (m.plb = :id AND EXISTS (SELECT oa.race FROM App\Entity\Player AS oa WHERE oa.id = m.plb AND oa.race IN (:opponent_races)))
+                OR (m.plb = :id AND EXISTS (SELECT oa.race FROM App\Entity\Player AS oa WHERE oa.id = m.pla AND oa.race IN (:opponent_races)))
             )
             AND ('.$match_type_query.')
             AND ('.$match_format_query.')
             AND ('.$date_query.')
+            AND ('.$event_query.')
             ORDER BY m.date DESC, m.id DESC'
         )->setParameter('id', $id)
          ->setParameter('opponent_races', $opponent_races);
 
-        if (!empty($date_start)) {
-            $query->setParameter('date_start', $date_start);
+        if (!empty($after)) {
+            $query->setParameter('after', $after);
         }
-        if (!empty($date_end)) {
-            $query->setParameter('date_end', $date_end);
+        if (!empty($before)) {
+            $query->setParameter('before', $before);
+        }
+        if (!empty($event)) {
+            $query->setParameter('event', '%'.$event.'%');
         }
 
         $matches = $query->execute();
-
-        $total_maps = 0;
-        $map_wins = 0;
-        $match_wins = 0;
-
-        foreach ($matches as $match) {
-            $total_maps += $match->getSca() + $match->getScb();
-            if ($match->getPla()->getId() == $player->getId()) {
-                if ($match->getSca() > $match->getScb()) {
-                    $match_wins++;
-                }
-                $map_wins += $match->getSca();
-            } else {
-                if ($match->getSca() < $match->getScb()) {
-                    $match_wins++;
-                }
-                $map_wins += $match->getScb();
-            }
-        }
+        $results = $this->getMatchesResults($matches, $player);
 
 		return $this->render('player/base.html.twig', [
 			'player' => $player,
-            'matches' => $matches,
+            'results' => $results,
             'nav_active' => 'results',
             'base_url' => '/players/' . $player->getId(),
             'opponent_races' => $opponent_races,
             'match_type' => $match_type,
             'match_format' => $match_format,
-            'match_wins' => $match_wins,
-            'total_maps' => $total_maps,
-            'map_wins' => $map_wins,
-            'date_start' => $date_start,
-            'date_end' => $date_end,
+            'after' => $after,
+            'before' => $before,
+            'event' => $event,
 		]);
     }
 
@@ -194,58 +232,97 @@ class Player extends AbstractController
             WHERE e.player = :id'
         )->setParameter('id', $id)->execute()[0]['total_earnings'];
 
-        $match_wins = 0;
-        $map_wins = 0;
-        $total_maps = 0;
-        $matches_month = [];
+        $results = $this->getMatchesResults($matches, $player);
+
+        if (!empty($player->getBirthday())) {
+            $player_age = $player->getBirthday()->diff(new \DateTime())->format('%a');
+            $player_age = floor(intval($player_age)/365);
+        }
+
+		return $this->render('player/base.html.twig', [
+			'player' => $player,
+            'results' => $results,
+            'nav_active' => 'summary',
+            'base_url' => '/players/' . $player->getId(),
+            'player_age' => $player_age ?? null,
+            'total_earnings' => $total_earnings,
+		]);
+    }
+
+    private function getMatchesResults(array $matches, PlayerEntity $player): array
+    {
+        $results = [
+            "match_wins" => 0,
+            "map_wins" => 0,
+            "total_maps" => 0,
+            "total_matches" => 0,
+            "matches_month" => [],
+            "events" => [],
+            "last" => null,
+            "first" => null,
+        ];
+
+        if (empty($matches)) {
+            return $results;
+        }
+
+        $results["first"] = $matches[0];
+        $results["last"] = end($matches);
+        $results["recent_matches"] = array_slice($matches, 0, 10);
+        $results["total_matches"] = count($matches);
 
         // Prepare $matches_month keys
         $end = $matches[0]->getDate();
         $start = $curr = new \Datetime(end($matches)->getDate()->format('Y-m').'-01');
         while ($curr->getTimestamp() < $end->getTimestamp()) {
-            $matches_month[$curr->getTimestamp()*1000] = [
+            $results["matches_month"][$curr->getTimestamp()*1000] = [
                 'total_matches' => 0,
                 'total_wins' => 0,
             ];
             $curr->modify('+1 month');
         }
-        $matches_month[$curr->getTimestamp()*1000] = [
+        $results["matches_month"][$curr->getTimestamp()*1000] = [
             'total_matches' => 0,
             'total_wins' => 0,
         ];
 
         foreach ($matches as $match) {
-            $matches_month[strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_matches'] += 1;
-            $total_maps += $match->getSca() + $match->getScb();
+
+            // get the tournament id
+            $event = $match->getEventObj();
+            while ($event->getParent() && $event->getParent()->getType() != "category") {
+                $event = $event->getParent();
+            }
+
+            // create the event in the event list if it doesn't exists
+            if (!array_key_exists($event->getId(), $results["events"])) {
+                $results["events"][$event->getId()] = [
+                    "date" => $event->getEarliest(),
+                    "name" => $event->getFullName(),
+                    "matches" => [],
+                ];
+            }
+
+            $results["events"][$event->getId()]["matches"][] = $match;
+
+            // aggregate statistics about matches
+            $results["matches_month"][strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_matches'] += 1;
+            $results["total_maps"] += $match->getSca() + $match->getScb();
             if ($match->getPla()->getId() == $player->getId()) {
                 if ($match->getSca() > $match->getScb()) {
-                    $matches_month[strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_wins'] += 1;
-                    $match_wins++;
+                    $results["matches_month"][strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_wins'] += 1;
+                    $results["match_wins"]++;
                 }
-                $map_wins += $match->getSca();
+                $results["map_wins"] += $match->getSca();
             } else {
                 if ($match->getSca() < $match->getScb()) {
-                    $matches_month[strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_wins'] += 1;
-                    $match_wins++;
+                    $results["matches_month"][strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_wins'] += 1;
+                    $results["match_wins"]++;
                 }
-                $map_wins += $match->getScb();
+                $results["map_wins"] += $match->getScb();
             }
         }
 
-        $player_age = $player->getBirthday()->diff(new \DateTime())->format('%a');
-        $player_age = floor(intval($player_age)/365);
-
-		return $this->render('player/base.html.twig', [
-			'player' => $player,
-            'matches' => $matches,
-            'match_wins' => $match_wins,
-            'total_maps' => $total_maps,
-            'map_wins' => $map_wins,
-            'total_earnings' => $total_earnings,
-            'matches_month' => $matches_month,
-            'nav_active' => 'summary',
-            'base_url' => '/players/' . $player->getId(),
-            'player_age' => $player_age,
-		]);
+        return $results;
     }
 }

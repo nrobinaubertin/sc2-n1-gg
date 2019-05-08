@@ -47,3 +47,19 @@
         opacity: 1;
     }
 }
+
+.picto {
+    width: 20px;
+    height: 20px;
+}
+
+.table-col {
+    width: 5rem;
+    flex-shrink: 0;
+}
+
+.score {
+    width: 5rem;
+    text-align: center;
+    flex-shrink: 0;
+}

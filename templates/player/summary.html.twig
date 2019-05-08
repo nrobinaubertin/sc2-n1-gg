@@ -8,18 +8,24 @@
                         <th scope="col">Race</th>
                         <td>{{ player.race }}</td>
                     </tr>
+                    {% if player.country %}
                     <tr>
                         <th scope="col">Country</th>
                         <td>{{ player.country }}</td>
                     </tr>
+                    {% endif %}
+                    {% if player.name %}
                     <tr>
                         <th scope="col">Full Name</th>
                         <td>{{ player.name }}{% if player.romanizedName %} ({{ player.romanizedName}}){% endif %}</td>
                     </tr>
+                    {% endif %}
+                    {% if player.birthday %}
                     <tr>
                         <th scope="col">Birthday</th>
                         <td>{{ player.birthday|date('Y-m-d') }} <small>({{ player_age }} years)</small></td>
                     </tr>
+                    {% endif %}
                     {% if player.lpName %}
                     <tr>
                         <th scope="col">Liquipedia</th>
@@ -34,11 +40,11 @@
                 <tbody>
                     <tr>
                         <th scope="col">First Match</th>
-                        <td>{{ (matches|last).date|date('Y-m-d') }}</td>
+                        <td>{{ results.first.date|date('Y-m-d') }}</td>
                     </tr>
                     <tr>
                         <th scope="col">Last Match</th>
-                        <td>{{ matches[0].date|date('Y-m-d') }}</td>
+                        <td>{{ results.last.date|date('Y-m-d') }}</td>
                     </tr>
                     <tr>
                         <th scope="col">Total earnings</th>
@@ -46,14 +52,14 @@
                     </tr>
                     <tr>
                         <th scope="col">Matches/Map played</th>
-                        <td>{{ matches|length }} / {{ total_maps }}</td>
+                        <td>{{ results.total_matches }} / {{ results.total_maps }}</td>
                     </tr>
                     <tr>
                         <th scope="col">Winrate Matches/Maps</th>
                         <td>
-                            {{ (100 * match_wins / (matches|length))|round(1, 'floor') }}%
+                            {{ (100 * results.match_wins / results.total_matches)|round(1, 'floor') }}%
                             /
-                            {{ (100 * map_wins / total_maps)|round(1, 'floor') }}%
+                            {{ (100 * results.map_wins / results.total_maps)|round(1, 'floor') }}%
                         </td>
                     </tr>
                 </tbody>
@@ -62,7 +68,7 @@
     </div>
     <div id="chart" class="container mb-2"></div>
     <h3>Most recent results:</h3>
-    {% include 'player/matches.html.twig' with {'matches': matches|slice(0, 10)} %}
+    {% include 'player/matches.html.twig' with {'matches': results.recent_matches, 'events': false} %}
 </div>
 <script>
     $(document).ready(function() {
@@ -71,7 +77,7 @@
             title: {text: 'Number of matches each month'},
             plotOptions: {
                 column: {
-                    pointStart: Date.UTC({{ (matches|last).date|date('Y, m, d') }})
+                    pointStart: Date.UTC({{ results.last.date|date('Y, m, d') }})
                 },
                 series: {
                     animation: false
@@ -95,7 +101,7 @@
                         pointFormat: 'score: {point.wins} - {point.losses}',
                     },
                     data: [
-                        {% for timestamp, data in matches_month %}
+                        {% for timestamp, data in results.matches_month %}
                         {
                             x:{{ timestamp}},
                             y:{{ data.total_matches }},

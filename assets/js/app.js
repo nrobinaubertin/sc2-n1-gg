@@ -11,3 +11,8 @@ $(document).ready(function() {
 });
 
 Highcharts = require('highcharts');
+
+// Race picto
+z_picto = require('../images/z.svg');
+t_picto = require('../images/t.svg');
+p_picto = require('../images/p.svg');
