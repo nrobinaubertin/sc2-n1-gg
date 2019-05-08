@@ -1,6 +1,6 @@
 <tr>
     <td class="d-flex justify-content-between">
-        <div class="table-col">{{ match.date|date('Y-m-d') }}</div>
+        <div class="table-col d-none d-sm-block text-left">{{ match.date|date('Y-m-d') }}</div>
         <div class="d-flex justify-content-center w-100">
         {% if match.pla.id == player.id %}
             <span class="text-right w-100 mr-1">
@@ -32,6 +32,6 @@
             </span>
         {% endif %}
         </div>
-        <div class="table-col d-none d-md-block text-right">{% if match.offline == true %}offline{% else %}online{% endif %}</div>
+        <div class="table-col d-none d-sm-block text-right">{% if match.offline == true %}<span title="offline">&#x1f50c;</span>{% else %}<span title="online">&#x1f30d;</span>{% endif %}</div>
     </td>
 </tr>

@@ -1,18 +1,25 @@
 <form class="mb-5" action="{{ base_url }}/results" method="get">
-    <div class="form-group">
-        <div class="lead">Event</div>
-        <input name="event" type="text" class="form-control-inline" value="{{ event }}">
-    </div>
-    <div class="form-group">
-        <div class="lead">Opponent</div>
-        <input name="opponent" type="text" class="form-control-inline">
-    </div>
-    <div class="form-group">
-        <div class="lead">Date range</div>
-        <label for="after" class="mr-2">From:</label>
-        <input name="after" type="date" class="form-control-inline mr-2" value="{{ after }}">
-        <label for="before" class="mr-2">To:</label>
-        <input name="before" type="date" class="form-control-inline" value="{{ before }}">
+    <div class="row">
+        <div class="col-12 col-lg-4">
+            <div class="form-group">
+                <div class="lead">Event</div>
+                <input name="event" type="text" class="form-control-inline" value="{{ event }}">
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="form-group">
+                <div class="lead">Opponent</div>
+                <input name="opponent" type="text" class="form-control-inline" value="{{ opponent }}">
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="form-group">
+                <div class="lead">Date range</div>
+                <input name="after" type="date" class="form-control-inline mr-2" value="{{ after }}">
+                <label for="before" class="mr-2">&rarr;</label>
+                <input name="before" type="date" class="form-control-inline" value="{{ before }}">
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-12 col-lg-4">

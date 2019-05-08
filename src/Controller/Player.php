@@ -166,13 +166,36 @@ class Player extends AbstractController
             $event_query .= ' AND lower(e.fullname) LIKE lower(:event)';
         }
 
+        $opponent_query = '1 = 1';
+        if ($opponent = $request->get('opponent')) {
+            $opponent_query .= ' AND lower(oo.tag) LIKE lower(:opponent)';
+        }
+
         $query = $this->em->createQuery(
             'SELECT m
             FROM App\Entity\Match AS m
             '.$event_join.'
             WHERE (
-                (m.pla = :id AND EXISTS (SELECT ob.race FROM App\Entity\Player AS ob WHERE ob.id = m.plb AND ob.race IN (:opponent_races)))
-                OR (m.plb = :id AND EXISTS (SELECT oa.race FROM App\Entity\Player AS oa WHERE oa.id = m.pla AND oa.race IN (:opponent_races)))
+                (
+                    m.pla = :id
+                    AND EXISTS (
+                        SELECT ob.race
+                        FROM App\Entity\Player AS ob
+                        WHERE ob.id = m.plb
+                        AND ob.race IN (:opponent_races)
+                        AND ('.str_replace('oo', 'ob', $opponent_query).')
+                    )
+                )
+                OR (
+                    m.plb = :id
+                    AND EXISTS (
+                        SELECT oa.race
+                        FROM App\Entity\Player AS oa
+                        WHERE oa.id = m.pla
+                        AND oa.race IN (:opponent_races)
+                        AND ('.str_replace('oo', 'oa', $opponent_query).')
+                    )
+                )
             )
             AND ('.$match_type_query.')
             AND ('.$match_format_query.')
@@ -191,6 +214,9 @@ class Player extends AbstractController
         if (!empty($event)) {
             $query->setParameter('event', '%'.$event.'%');
         }
+        if (!empty($opponent)) {
+            $query->setParameter('opponent', '%'.$opponent.'%');
+        }
 
         $matches = $query->execute();
         $results = $this->getMatchesResults($matches, $player);
@@ -206,6 +232,7 @@ class Player extends AbstractController
             'after' => $after,
             'before' => $before,
             'event' => $event,
+            'opponent' => $opponent,
 		]);
     }
 
