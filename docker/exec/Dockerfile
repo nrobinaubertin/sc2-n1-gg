@@ -11,6 +11,7 @@ RUN set -xe \
         libpq-dev \
         libxml2-dev \
         libzip-dev \
+        unzip \
         zlib1g-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install mbstring zip soap pdo_pgsql intl opcache \
