@@ -219,7 +219,7 @@ class Player extends AbstractController
         }
 
         $matches = $query->execute();
-        $results = $this->getMatchesResults($matches, $player);
+        $results = $this->getMatchesResults($matches, $player, ["group_by_event" => true]);
 
 		return $this->render('player/base.html.twig', [
 			'player' => $player,
@@ -276,7 +276,7 @@ class Player extends AbstractController
 		]);
     }
 
-    private function getMatchesResults(array $matches, PlayerEntity $player): array
+    private function getMatchesResults(array $matches, PlayerEntity $player, array $options = []): array
     {
         $results = [
             "match_wins" => 0,
@@ -293,8 +293,8 @@ class Player extends AbstractController
             return $results;
         }
 
-        $results["first"] = $matches[0];
-        $results["last"] = end($matches);
+        $results["end"] = $matches[0];
+        $results["first"] = end($matches);
         $results["recent_matches"] = array_slice($matches, 0, 10);
         $results["total_matches"] = count($matches);
 
@@ -315,35 +315,44 @@ class Player extends AbstractController
 
         foreach ($matches as $match) {
 
-            // get the tournament id
-            $event = $match->getEventObj();
-            while ($event->getParent() && $event->getParent()->getType() != "category") {
-                $event = $event->getParent();
-            }
+            if (isset($options["group_by_event"]) && $options["group_by_event"]) {
+                // get the tournament id
+                $event = $match->getEventObj();
+                while (
+                    !empty($event)
+                    && !empty($event->getParent())
+                    && $event->getParent()->getType() != "category"
+                ) {
+                    $event = $event->getParent();
+                }
 
-            // create the event in the event list if it doesn't exists
-            if (!array_key_exists($event->getId(), $results["events"])) {
-                $results["events"][$event->getId()] = [
-                    "date" => $event->getEarliest(),
-                    "name" => $event->getFullName(),
-                    "matches" => [],
-                ];
-            }
+                if (!empty($event)) {
+                    // create the event in the event list if it doesn't exists
+                    if (!array_key_exists($event->getId(), $results["events"])) {
+                        $results["events"][$event->getId()] = [
+                            "date" => $event->getEarliest(),
+                            "name" => $event->getFullName(),
+                            "matches" => [],
+                        ];
+                    }
 
-            $results["events"][$event->getId()]["matches"][] = $match;
+                    $results["events"][$event->getId()]["matches"][] = $match;
+                }
+            }
 
             // aggregate statistics about matches
-            $results["matches_month"][strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_matches'] += 1;
+            $datestring = strtotime($match->getDate()->format('Y-m').'-01')*1000;
+            $results["matches_month"][$datestring]['total_matches'] += 1;
             $results["total_maps"] += $match->getSca() + $match->getScb();
             if ($match->getPla()->getId() == $player->getId()) {
                 if ($match->getSca() > $match->getScb()) {
-                    $results["matches_month"][strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_wins'] += 1;
+                    $results["matches_month"][$datestring]['total_wins'] += 1;
                     $results["match_wins"]++;
                 }
                 $results["map_wins"] += $match->getSca();
             } else {
                 if ($match->getSca() < $match->getScb()) {
-                    $results["matches_month"][strtotime($match->getDate()->format('Y-m').'-01')*1000]['total_wins'] += 1;
+                    $results["matches_month"][$datestring]['total_wins'] += 1;
                     $results["match_wins"]++;
                 }
                 $results["map_wins"] += $match->getScb();
