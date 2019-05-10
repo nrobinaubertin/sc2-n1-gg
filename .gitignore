@@ -3,6 +3,7 @@
 composer.phar
 aligulac.sql
 .bash_history
+sql/
 ###< global ###
 
 ###> symfony/framework-bundle ###
