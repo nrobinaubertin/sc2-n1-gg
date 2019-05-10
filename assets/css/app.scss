@@ -50,6 +50,7 @@
 
 body, html {
     height: 100%;
+    font-family: 'Nunito', sans-serif;
 }
 
 .picto {
@@ -71,4 +72,11 @@ body, html {
 .page-container {
     min-height: 100vh;
     background: whitesmoke;
+}
+
+.title {
+    font-family: 'Audiowide', cursive;
+    &:hover {
+        text-decoration: none;
+    }
 }

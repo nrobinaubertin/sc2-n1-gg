@@ -76,6 +76,10 @@ Encore
         // only copy files matching this pattern
         //pattern: /\.(png|jpg|jpeg)$/
     })
+
+    .copyFiles({
+        from: './assets/fonts',
+    })
 ;
 
 module.exports = Encore.getWebpackConfig();
