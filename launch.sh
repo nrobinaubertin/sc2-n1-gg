@@ -37,6 +37,9 @@ CURRENT_USER="$(id -u):$(id -g)" docker-compose up -d --force-recreate --build -
 # wait a bit for postgres to init
 sleep 120
 
+# install backend dependencies
+docker exec -it sc2-n1-gg_exec_1 php bin/composer install
+
 # Clear cache
 docker exec -it sc2-n1-gg_exec_1 php bin/console c:c --env=prod
 
