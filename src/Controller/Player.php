@@ -308,10 +308,6 @@ class Player extends AbstractController
             ];
             $curr->modify('+1 month');
         }
-        $results["matches_month"][$curr->getTimestamp()*1000] = [
-            'total_matches' => 0,
-            'total_wins' => 0,
-        ];
 
         foreach ($matches as $match) {
 
