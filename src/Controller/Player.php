@@ -159,16 +159,24 @@ class Player extends AbstractController
             $match_format_query .= ' OR (m.sca > 6 OR m.scb > 6)';
         }
 
-        $event_query = '1 = 1';
+        $event_query = '1 = 0';
         $event_join = '';
-        if ($event = $request->get('event')) {
+        if ($events = $request->get('event')) {
             $event_join = 'INNER JOIN m.eventobj e';
-            $event_query .= ' AND lower(e.fullname) LIKE lower(:event)';
+            foreach (explode(' ', $events) as $k=>$event) {
+                $event_query .= ' OR lower(e.fullname) LIKE lower(:event'.$k.')';
+            }
+        } else {
+            $event_query = '1 = 1';
         }
 
-        $opponent_query = '1 = 1';
-        if ($opponent = $request->get('opponent')) {
-            $opponent_query .= ' AND lower(oo.tag) LIKE lower(:opponent)';
+        $opponent_query = '1 = 0';
+        if ($opponents = $request->get('opponent')) {
+            foreach (explode(' ', $opponents) as $k=>$opponent) {
+                $opponent_query .= ' OR lower(oo.tag) LIKE lower(:opponent'.$k.')';
+            }
+        } else {
+            $opponent_query = '1 = 1';
         }
 
         $query = $this->em->createQuery(
@@ -211,11 +219,15 @@ class Player extends AbstractController
         if (!empty($before)) {
             $query->setParameter('before', $before);
         }
-        if (!empty($event)) {
-            $query->setParameter('event', '%'.$event.'%');
+        if (!empty($events)) {
+            foreach (explode(' ', $events) as $k=>$event) {
+                $query->setParameter('event'.$k, '%'.$event.'%');
+            }
         }
-        if (!empty($opponent)) {
-            $query->setParameter('opponent', '%'.$opponent.'%');
+        if (!empty($opponents)) {
+            foreach (explode(' ', $opponents) as $k=>$opponent) {
+                $query->setParameter('opponent'.$k, '%'.$opponent.'%');
+            }
         }
 
         $matches = $query->execute();
@@ -231,8 +243,8 @@ class Player extends AbstractController
             'match_format' => $match_format,
             'after' => $after,
             'before' => $before,
-            'event' => $event,
-            'opponent' => $opponent,
+            'events' => $events,
+            'opponents' => $opponents,
 		]);
     }
 
