@@ -52,13 +52,6 @@ class Player
     /**
      * @var int|null
      *
-     * @ORM\Column(name="mcnum", type="integer", nullable=true)
-     */
-    private $mcnum;
-
-    /**
-     * @var int|null
-     *
      * @ORM\Column(name="tlpd_id", type="integer", nullable=true)
      */
     private $tlpdId;
@@ -99,51 +92,11 @@ class Player
     private $race;
 
     /**
-     * @var float|null
-     *
-     * @ORM\Column(name="dom_val", type="float", precision=10, scale=0, nullable=true)
-     */
-    private $domVal;
-
-    /**
      * @var string|null
      *
      * @ORM\Column(name="romanized_name", type="string", length=100, nullable=true)
      */
     private $romanizedName;
-
-    /**
-     * @var \Rating
-     *
-     * @ORM\ManyToOne(targetEntity="Rating")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="current_rating_id", referencedColumnName="id")
-     * })
-     * @MaxDepth(1)
-     */
-    private $currentRating;
-
-    /**
-     * @var \Period
-     *
-     * @ORM\ManyToOne(targetEntity="Period")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="dom_end_id", referencedColumnName="id")
-     * })
-     * @MaxDepth(1)
-     */
-    private $domEnd;
-
-    /**
-     * @var \Period
-     *
-     * @ORM\ManyToOne(targetEntity="Period")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="dom_start_id", referencedColumnName="id")
-     * })
-     * @MaxDepth(1)
-     */
-    private $domStart;
 
     public function getId(): ?int
     {
@@ -182,18 +135,6 @@ class Player
     public function setBirthday(?\DateTimeInterface $birthday): self
     {
         $this->birthday = $birthday;
-
-        return $this;
-    }
-
-    public function getMcnum(): ?int
-    {
-        return $this->mcnum;
-    }
-
-    public function setMcnum(?int $mcnum): self
-    {
-        $this->mcnum = $mcnum;
 
         return $this;
     }
@@ -270,18 +211,6 @@ class Player
         return $this;
     }
 
-    public function getDomVal(): ?float
-    {
-        return $this->domVal;
-    }
-
-    public function setDomVal(?float $domVal): self
-    {
-        $this->domVal = $domVal;
-
-        return $this;
-    }
-
     public function getRomanizedName(): ?string
     {
         return $this->romanizedName;
@@ -293,42 +222,4 @@ class Player
 
         return $this;
     }
-
-    public function getCurrentRating(): ?Rating
-    {
-        return $this->currentRating;
-    }
-
-    public function setCurrentRating(?Rating $currentRating): self
-    {
-        $this->currentRating = $currentRating;
-
-        return $this;
-    }
-
-    public function getDomEnd(): ?Period
-    {
-        return $this->domEnd;
-    }
-
-    public function setDomEnd(?Period $domEnd): self
-    {
-        $this->domEnd = $domEnd;
-
-        return $this;
-    }
-
-    public function getDomStart(): ?Period
-    {
-        return $this->domStart;
-    }
-
-    public function setDomStart(?Period $domStart): self
-    {
-        $this->domStart = $domStart;
-
-        return $this;
-    }
-
-
 }

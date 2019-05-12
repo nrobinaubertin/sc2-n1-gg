@@ -110,17 +110,6 @@ class Match
     private $eventobj;
 
     /**
-     * @var \Period
-     *
-     * @ORM\ManyToOne(targetEntity="Period")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="period_id", referencedColumnName="id")
-     * })
-     * @MaxDepth(1)
-     */
-    private $period;
-
-    /**
      * @var \Player
      *
      * @ORM\ManyToOne(targetEntity="Player")
@@ -140,26 +129,6 @@ class Match
      * })
      */
     private $plb;
-
-    /**
-     * @var \Rating
-     *
-     * @ORM\ManyToOne(targetEntity="Rating")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="rta_id", referencedColumnName="id")
-     * })
-     */
-    private $rta;
-
-    /**
-     * @var \Rating
-     *
-     * @ORM\ManyToOne(targetEntity="Rating")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="rtb_id", referencedColumnName="id")
-     * })
-     */
-    private $rtb;
 
     public function getId(): ?int
     {
@@ -298,18 +267,6 @@ class Match
         return $this;
     }
 
-    public function getPeriod(): ?Period
-    {
-        return $this->period;
-    }
-
-    public function setPeriod(?Period $period): self
-    {
-        $this->period = $period;
-
-        return $this;
-    }
-
     public function getPla(): ?Player
     {
         return $this->pla;
@@ -333,30 +290,4 @@ class Match
 
         return $this;
     }
-
-    public function getRta(): ?Rating
-    {
-        return $this->rta;
-    }
-
-    public function setRta(?Rating $rta): self
-    {
-        $this->rta = $rta;
-
-        return $this;
-    }
-
-    public function getRtb(): ?Rating
-    {
-        return $this->rtb;
-    }
-
-    public function setRtb(?Rating $rtb): self
-    {
-        $this->rtb = $rtb;
-
-        return $this;
-    }
-
-
 }
