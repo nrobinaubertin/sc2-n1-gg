@@ -7,12 +7,14 @@ mkdir sql
 db_filename="aligulac-$(date +%Y-%m-%d)"
 
 # only redownload the db if todays db doesn't exists
-if ! [ -f sql/"$db_filename.sql" ]; then
-    # Remove previous downloaded db
-    rm ./sql/*.sql ./sql/*.sql.gz
+if ! [ -f sql/"$db_filename.sql" ] && ! [ "$1" = "--no-update-db" ]; then
+    
+    rm ./sql/*.sql.gz
 
     # Download Aligulac's database
     wget -O sql/"$db_filename.sql.gz" "http://static.aligulac.com/aligulac.sql.gz"
+    
+    rm ./sql/*.sql
 
     # unzip it
     gunzip sql/"$db_filename.sql.gz"
@@ -40,12 +42,12 @@ sleep 120
 # install backend dependencies
 docker exec -it sc2-n1-gg_exec_1 php bin/composer install
 
-# Clear cache
-docker exec -it sc2-n1-gg_exec_1 php bin/console c:c --env=prod
-
 # Build the app
 docker exec -it sc2-n1-gg_exec_1 yarn install
 docker exec -it sc2-n1-gg_exec_1 yarn encore production
 
 # Convert the database:
 #docker exec -it sc2-n1-gg_exec_1 php bin/console doc:sch:up --force
+
+# Remove cache
+rm -rf var/cache/*

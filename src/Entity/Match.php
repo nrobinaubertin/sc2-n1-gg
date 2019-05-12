@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * Match
  *
- * @ORM\Table(name="match", indexes={@ORM\Index(name="match_rcb_like", columns={"rcb"}), @ORM\Index(name="match_rca", columns={"rca"}), @ORM\Index(name="match_eventobj_id", columns={"eventobj_id"}), @ORM\Index(name="match_submitter_id", columns={"submitter_id"}), @ORM\Index(name="match_scb", columns={"scb"}), @ORM\Index(name="match_rta_id", columns={"rta_id"}), @ORM\Index(name="match_rtb_id", columns={"rtb_id"}), @ORM\Index(name="match_offline", columns={"offline"}), @ORM\Index(name="match_plb_id", columns={"plb_id"}), @ORM\Index(name="match_pla_id", columns={"pla_id"}), @ORM\Index(name="match_game", columns={"game"}), @ORM\Index(name="match_game_like", columns={"game"}), @ORM\Index(name="match_rcb", columns={"rcb"}), @ORM\Index(name="match_sca", columns={"sca"}), @ORM\Index(name="match_rca_like", columns={"rca"}), @ORM\Index(name="match_period_id", columns={"period_id"})})
+ * @ORM\Table(name="match")
  * @ORM\Entity
  * @ApiResource(
  *     collectionOperations={"get"},

@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * Alias
  *
- * @ORM\Table(name="alias", indexes={@ORM\Index(name="alias_player_id", columns={"player_id"}), @ORM\Index(name="alias_group_id", columns={"group_id"})})
+ * @ORM\Table(name="alias")
  * @ORM\Entity
  */
 class Alias

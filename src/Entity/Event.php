@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * Event
  *
- * @ORM\Table(name="event", indexes={@ORM\Index(name="event_type", columns={"type"}), @ORM\Index(name="event_latest", columns={"latest"}), @ORM\Index(name="event_idx", columns={"idx"}), @ORM\Index(name="event_closed", columns={"closed"}), @ORM\Index(name="event_prizepool", columns={"prizepool"}), @ORM\Index(name="event_parent_id", columns={"parent_id"}), @ORM\Index(name="event_earliest", columns={"earliest"}), @ORM\Index(name="event_category", columns={"category"}), @ORM\Index(name="event_noprint", columns={"noprint"})})
+ * @ORM\Table(name="event")
  * @ORM\Entity
  * @ApiResource(
  *     collectionOperations={"get"},

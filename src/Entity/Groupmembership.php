@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * Groupmembership
  *
- * @ORM\Table(name="groupmembership", indexes={@ORM\Index(name="groupmembership_player_id", columns={"player_id"}), @ORM\Index(name="groupmembership_current", columns={"current"}), @ORM\Index(name="groupmembership_group_id", columns={"group_id"}), @ORM\Index(name="groupmembership_playing", columns={"playing"})})
+ * @ORM\Table(name="groupmembership")
  * @ORM\Entity
  */
 class Groupmembership

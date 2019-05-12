@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * Earnings
  *
- * @ORM\Table(name="earnings", indexes={@ORM\Index(name="earnings_event_id", columns={"event_id"}), @ORM\Index(name="earnings_player_id", columns={"player_id"})})
+ * @ORM\Table(name="earnings")
  * @ORM\Entity
  * @ApiResource(
  *     collectionOperations={"get"},
