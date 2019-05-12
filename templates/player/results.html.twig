@@ -98,7 +98,13 @@
         <strong>{{ results.match_wins }}-{{ results.total_matches - results.match_wins }}</strong>
         <small class="text-muted">({{ (100 * results.match_wins / results.total_matches)|round(1, 'floor') }}%)</small> in matches.
     </div>
-    {% include 'player/matches.html.twig' with {'matches': false, 'events': results.events} %}
+    {% if results.events|length > 30 %}
+    <div class="text-center">
+        <img src="{{ asset('build/images/warning.png') }}" class="picto"/>
+        Only the most recent 30 events are showed <small class="text-muted">({{ results.events|length }} in total)</small>.
+    </div>
+    {% endif %}
+    {% include 'player/matches.html.twig' with {'matches': false, 'events': results.events|slice(0, 30)} %}
 {% else %}
     <div class="lead">No match found.</div>
 {% endif %}

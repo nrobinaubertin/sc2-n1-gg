@@ -305,7 +305,7 @@ class Player extends AbstractController
             return $results;
         }
 
-        $results["end"] = $matches[0];
+        $results["last"] = $matches[0];
         $results["first"] = end($matches);
         $results["recent_matches"] = array_slice($matches, 0, 10);
         $results["total_matches"] = count($matches);
