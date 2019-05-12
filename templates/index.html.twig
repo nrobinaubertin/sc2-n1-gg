@@ -21,8 +21,11 @@
                 <div class="lead">Results:</div>
                     <div class="list-group">
                     {% for player in players %}
-                        <a href="/players/{{ player.id }}" class="list-group-item list-group-item-action">
-                            {% include 'player/race.html.twig' with {'race': player.race, 'long': false} %} {{ player.tag }} {{ flags.getFlag(player.country) }}
+                        <a href="/players/{{ player.player.id }}" class="list-group-item list-group-item-action">
+                            {% include 'player/race.html.twig' with {'race': player.player.race, 'long': false} %}
+                            {{ player.player.tag }}
+                            {{ flags.getFlag(player.player.country) }}
+                            [{{ player.match_count }} matches]
                         </a>
                     {% endfor %}
                     </div>
