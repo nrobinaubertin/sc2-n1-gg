@@ -56,4 +56,4 @@ UPDATE match as m SET eventobj_id = (
 ) WHERE EXISTS (
     SELECT id FROM event WHERE id = m.eventobj_id AND "type" = 'round'
 );
--- DELETE FROM event WHERE "type" = 'round';
+DELETE FROM event WHERE "type" = 'round';
