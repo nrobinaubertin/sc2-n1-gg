@@ -67,56 +67,7 @@
             </table>
         </div>
     </div>
-    <div id="chart" class="container mb-2"></div>
     <h3>Most recent results:</h3>
+    {% include 'player/matches_month_graph.html.twig' %}
     {% include 'player/matches.html.twig' with {'matches': results.recent_matches, 'events': false} %}
 </div>
-<script>
-    $(document).ready(function() {
-        var myChart = Highcharts.chart('chart', {
-            chart: {type: 'line'},
-            title: {text: 'Number of matches each month'},
-            plotOptions: {
-                column: {
-                    pointStart: Date.UTC({{ results.last.date|date('Y, m, d') }})
-                },
-                series: {
-                    animation: false
-                },
-            },
-            xAxis: {
-                type: 'datetime',
-            },
-            yAxis: {
-                title: "",
-                gridLineWidth: 1,
-            },
-            series: [
-                {
-                    name: "Matches",
-                    color: 'rgba(0, 0, 0, 0.5)',
-                    borderWidth: 0,
-                    enableMouseTracking: true,
-                    type: 'column',
-                    tooltip: {
-                        pointFormat: 'score: {point.wins} - {point.losses}',
-                    },
-                    data: [
-                        {% for timestamp, data in results.matches_month %}
-                        {
-                            x:{{ timestamp}},
-                            y:{{ data.total_matches }},
-                            wins: {{ data.total_wins }},
-                            losses: {{ data.total_matches - data.total_wins }},
-                            {% if data.total_matches > 0 %}
-                            color: 'rgba(20, 20, 20, {{ 0.1 + (((data.total_wins)/(2*data.total_matches))|round(1, 'floor'))*2 }})',
-                            {% endif %}
-                        },
-                        {% endfor %}
-                    ],
-                },
-            ],
-            credits: {enabled: false},
-        });
-    });
-</script>
