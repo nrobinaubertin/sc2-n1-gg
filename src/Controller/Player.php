@@ -324,16 +324,7 @@ class Player extends AbstractController
         foreach ($matches as $match) {
 
             if (isset($options["group_by_event"]) && $options["group_by_event"]) {
-                // get the tournament id
                 $event = $match->getEventObj();
-                while (
-                    !empty($event)
-                    && !empty($event->getParent())
-                    && $event->getParent()->getType() != "category"
-                ) {
-                    $event = $event->getParent();
-                }
-
                 if (!empty($event)) {
                     // create the event in the event list if it doesn't exists
                     if (!array_key_exists($event->getId(), $results["events"])) {
@@ -343,7 +334,6 @@ class Player extends AbstractController
                             "matches" => [],
                         ];
                     }
-
                     $results["events"][$event->getId()]["matches"][] = $match;
                 }
             }

@@ -36,20 +36,6 @@ class Event
     private $name;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="lft", type="integer", nullable=true)
-     */
-    private $lft;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="rgt", type="integer", nullable=true)
-     */
-    private $rgt;
-
-    /**
      * @var bool
      *
      * @ORM\Column(name="closed", type="boolean", nullable=false)
@@ -62,13 +48,6 @@ class Event
      * @ORM\Column(name="big", type="boolean", nullable=false)
      */
     private $big;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="noprint", type="boolean", nullable=false)
-     */
-    private $noprint;
 
     /**
      * @var string
@@ -90,27 +69,6 @@ class Event
      * @ORM\Column(name="lp_name", type="string", length=200, nullable=true)
      */
     private $lpName;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="tlpd_id", type="integer", nullable=true)
-     */
-    private $tlpdId;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="tlpd_db", type="integer", nullable=true)
-     */
-    private $tlpdDb;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="tl_thread", type="integer", nullable=true)
-     */
-    private $tlThread;
 
     /**
      * @var bool|null
@@ -148,27 +106,6 @@ class Event
     private $type;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idx", type="integer", nullable=false)
-     */
-    private $idx;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="wcs_year", type="integer", nullable=true)
-     */
-    private $wcsYear;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="wcs_tier", type="integer", nullable=true)
-     */
-    private $wcsTier;
-
-    /**
      * @var \Event
      *
      * @ORM\ManyToOne(targetEntity="Event")
@@ -196,30 +133,6 @@ class Event
         return $this;
     }
 
-    public function getLft(): ?int
-    {
-        return $this->lft;
-    }
-
-    public function setLft(?int $lft): self
-    {
-        $this->lft = $lft;
-
-        return $this;
-    }
-
-    public function getRgt(): ?int
-    {
-        return $this->rgt;
-    }
-
-    public function setRgt(?int $rgt): self
-    {
-        $this->rgt = $rgt;
-
-        return $this;
-    }
-
     public function getClosed(): ?bool
     {
         return $this->closed;
@@ -240,18 +153,6 @@ class Event
     public function setBig(bool $big): self
     {
         $this->big = $big;
-
-        return $this;
-    }
-
-    public function getNoprint(): ?bool
-    {
-        return $this->noprint;
-    }
-
-    public function setNoprint(bool $noprint): self
-    {
-        $this->noprint = $noprint;
 
         return $this;
     }
@@ -288,42 +189,6 @@ class Event
     public function setLpName(?string $lpName): self
     {
         $this->lpName = $lpName;
-
-        return $this;
-    }
-
-    public function getTlpdId(): ?int
-    {
-        return $this->tlpdId;
-    }
-
-    public function setTlpdId(?int $tlpdId): self
-    {
-        $this->tlpdId = $tlpdId;
-
-        return $this;
-    }
-
-    public function getTlpdDb(): ?int
-    {
-        return $this->tlpdDb;
-    }
-
-    public function setTlpdDb(?int $tlpdDb): self
-    {
-        $this->tlpdDb = $tlpdDb;
-
-        return $this;
-    }
-
-    public function getTlThread(): ?int
-    {
-        return $this->tlThread;
-    }
-
-    public function setTlThread(?int $tlThread): self
-    {
-        $this->tlThread = $tlThread;
 
         return $this;
     }
@@ -388,42 +253,6 @@ class Event
         return $this;
     }
 
-    public function getIdx(): ?int
-    {
-        return $this->idx;
-    }
-
-    public function setIdx(int $idx): self
-    {
-        $this->idx = $idx;
-
-        return $this;
-    }
-
-    public function getWcsYear(): ?int
-    {
-        return $this->wcsYear;
-    }
-
-    public function setWcsYear(?int $wcsYear): self
-    {
-        $this->wcsYear = $wcsYear;
-
-        return $this;
-    }
-
-    public function getWcsTier(): ?int
-    {
-        return $this->wcsTier;
-    }
-
-    public function setWcsTier(?int $wcsTier): self
-    {
-        $this->wcsTier = $wcsTier;
-
-        return $this;
-    }
-
     public function getParent(): ?self
     {
         return $this->parent;
@@ -435,6 +264,4 @@ class Event
 
         return $this;
     }
-
-
 }
