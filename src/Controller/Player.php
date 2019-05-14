@@ -291,10 +291,34 @@ class Player extends AbstractController
     private function getMatchesResults(array $matches, PlayerEntity $player, array $options = []): array
     {
         $results = [
-            "match_wins" => 0,
-            "map_wins" => 0,
-            "total_maps" => 0,
-            "total_matches" => 0,
+            "matches" => [
+                "p" => [
+                    "wins" => 0,
+                    "total" => 0,
+                ],
+                "t" => [
+                    "wins" => 0,
+                    "total" => 0,
+                ],
+                "z" => [
+                    "wins" => 0,
+                    "total" => 0,
+                ]
+            ],
+            "maps" => [
+                "p" => [
+                    "wins" => 0,
+                    "total" => 0,
+                ],
+                "t" => [
+                    "wins" => 0,
+                    "total" => 0,
+                ],
+                "z" => [
+                    "wins" => 0,
+                    "total" => 0,
+                ]
+            ],
             "matches_month" => [],
             "events" => [],
             "last" => null,
@@ -345,19 +369,22 @@ class Player extends AbstractController
             // aggregate statistics about matches
             $datestring = strtotime($match->getDate()->format('Y-m').'-01')*1000;
             $results["matches_month"][$datestring]['total_matches'] += 1;
-            $results["total_maps"] += $match->getSca() + $match->getScb();
             if ($match->getPla()->getId() == $player->getId()) {
+                $results["maps"][strtolower($match->getPlb()->getRace())]["total"] += $match->getSca() + $match->getScb();
+                $results["maps"][strtolower($match->getPlb()->getRace())]["wins"] += $match->getSca();
+                $results["matches"][strtolower($match->getPlb()->getRace())]["total"]++;
                 if ($match->getSca() > $match->getScb()) {
+                    $results["matches"][strtolower($match->getPlb()->getRace())]["wins"]++;
                     $results["matches_month"][$datestring]['total_wins'] += 1;
-                    $results["match_wins"]++;
                 }
-                $results["map_wins"] += $match->getSca();
             } else {
+                $results["maps"][strtolower($match->getPla()->getRace())]["total"] += $match->getSca() + $match->getScb();
+                $results["maps"][strtolower($match->getPla()->getRace())]["wins"] += $match->getSca();
+                $results["matches"][strtolower($match->getPla()->getRace())]["total"]++;
                 if ($match->getSca() < $match->getScb()) {
+                    $results["matches"][strtolower($match->getPla()->getRace())]["wins"]++;
                     $results["matches_month"][$datestring]['total_wins'] += 1;
-                    $results["match_wins"]++;
                 }
-                $results["map_wins"] += $match->getScb();
             }
         }
 

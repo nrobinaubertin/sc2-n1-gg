@@ -1,3 +1,7 @@
+{% set total_matches = results.matches.z.total + results.matches.p.total + results.matches.t.total %}
+{% set wins_matches = results.matches.z.wins + results.matches.p.wins + results.matches.t.wins %}
+{% set total_maps = results.maps.z.total + results.maps.p.total + results.maps.t.total %}
+{% set wins_maps = results.maps.z.wins + results.maps.p.wins + results.maps.t.wins %}
 <form class="mb-5" action="{{ base_url }}/results" method="get">
     <div class="row">
         <div class="col-12 col-lg-4">
@@ -90,13 +94,13 @@
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
 </form>
-{% if results.total_matches > 0 %}
+{% if total_matches > 0 %}
     <div class="text-center">
         Under these filters, {{ player.tag }} is
-        <strong>{{ results.map_wins }}-{{ results.total_maps - results.map_wins }}</strong>
-        <small class="text-muted">({{ (100 * results.map_wins / results.total_maps)|round(1, 'floor') }}%)</small> in games and
-        <strong>{{ results.match_wins }}-{{ results.total_matches - results.match_wins }}</strong>
-        <small class="text-muted">({{ (100 * results.match_wins / results.total_matches)|round(1, 'floor') }}%)</small> in matches.
+        <strong>{{ wins_maps }}-{{ total_maps - wins_maps }}</strong>
+        <small class="text-muted">({{ (100 * wins_maps / total_maps)|round(1, 'floor') }}%)</small> in games and
+        <strong>{{ wins_matches }}-{{ total_matches - wins_matches }}</strong>
+        <small class="text-muted">({{ (100 * wins_matches / total_matches)|round(1, 'floor') }}%)</small> in matches.
     </div>
     {% if results.events|length > 30 %}
     <div class="text-center">

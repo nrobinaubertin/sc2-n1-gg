@@ -1,4 +1,8 @@
 {% import 'flags.html.twig' as flags %}
+{% set total_matches = results.matches.z.total + results.matches.p.total + results.matches.t.total %}
+{% set wins_matches = results.matches.z.wins + results.matches.p.wins + results.matches.t.wins %}
+{% set total_maps = results.maps.z.total + results.maps.p.total + results.maps.t.total %}
+{% set wins_maps = results.maps.z.wins + results.maps.p.wins + results.maps.t.wins %}
 <div class="container">
     <h3>Facts:</h3>
     <div class="row mb-2">
@@ -52,15 +56,17 @@
                         <td>${{ total_earnings|number_format(0, "", ",") }}</td>
                     </tr>
                     <tr>
-                        <th scope="col">Matches/Map played</th>
-                        <td>{{ results.total_matches }} / {{ results.total_maps }}</td>
+                        <th scope="col">Matches/Maps played</th>
+                        <td>
+                            {{ total_matches }} / {{ total_maps }}
+                        </td>
                     </tr>
                     <tr>
                         <th scope="col">Winrate Matches/Maps</th>
                         <td>
-                            {{ (100 * results.match_wins / results.total_matches)|round(1, 'floor') }}%
+                            {{ (100 * wins_matches / total_matches)|round(1, 'floor') }}%
                             /
-                            {{ (100 * results.map_wins / results.total_maps)|round(1, 'floor') }}%
+                            {{ (100 * wins_maps / total_maps)|round(1, 'floor') }}%
                         </td>
                     </tr>
                 </tbody>

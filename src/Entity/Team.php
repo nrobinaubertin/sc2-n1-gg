@@ -43,20 +43,6 @@ class Team
     private $shortname;
 
     /**
-     * @var float|null
-     *
-     * @ORM\Column(name="scoreak", type="float", precision=10, scale=0, nullable=true)
-     */
-    private $scoreak;
-
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(name="scorepl", type="float", precision=10, scale=0, nullable=true)
-     */
-    private $scorepl;
-
-    /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="founded", type="date", nullable=true)
@@ -91,27 +77,6 @@ class Team
      */
     private $lpName;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_team", type="boolean", nullable=false)
-     */
-    private $isTeam;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_manual", type="boolean", nullable=false)
-     */
-    private $isManual;
-
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(name="meanrating", type="float", precision=10, scale=0, nullable=true)
-     */
-    private $meanrating;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -137,30 +102,6 @@ class Team
     public function setShortname(?string $shortname): self
     {
         $this->shortname = $shortname;
-
-        return $this;
-    }
-
-    public function getScoreak(): ?float
-    {
-        return $this->scoreak;
-    }
-
-    public function setScoreak(?float $scoreak): self
-    {
-        $this->scoreak = $scoreak;
-
-        return $this;
-    }
-
-    public function getScorepl(): ?float
-    {
-        return $this->scorepl;
-    }
-
-    public function setScorepl(?float $scorepl): self
-    {
-        $this->scorepl = $scorepl;
 
         return $this;
     }
@@ -224,42 +165,4 @@ class Team
 
         return $this;
     }
-
-    public function getIsTeam(): ?bool
-    {
-        return $this->isTeam;
-    }
-
-    public function setIsTeam(bool $isTeam): self
-    {
-        $this->isTeam = $isTeam;
-
-        return $this;
-    }
-
-    public function getIsManual(): ?bool
-    {
-        return $this->isManual;
-    }
-
-    public function setIsManual(bool $isManual): self
-    {
-        $this->isManual = $isManual;
-
-        return $this;
-    }
-
-    public function getMeanrating(): ?float
-    {
-        return $this->meanrating;
-    }
-
-    public function setMeanrating(?float $meanrating): self
-    {
-        $this->meanrating = $meanrating;
-
-        return $this;
-    }
-
-
 }
