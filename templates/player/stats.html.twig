@@ -1,0 +1,84 @@
+{% set total_matches = results.matches.z.total + results.matches.p.total + results.matches.t.total %}
+{% set wins_matches = results.matches.z.wins + results.matches.p.wins + results.matches.t.wins %}
+{% set total_maps = results.maps.z.total + results.maps.p.total + results.maps.t.total %}
+{% set wins_maps = results.maps.z.wins + results.maps.p.wins + results.maps.t.wins %}
+<div class="mb-5">
+    <div class="row mb-1">
+        <div class="col-12 col-md-3 lead text-md-right">
+            Race distribution
+        </div>
+        <div class="col-12 col-md-7 d-flex align-items-center">
+            <div class="progress w-100" style="height: 25px;">
+                <div class="progress-bar bg-t" style="width: {{ (100*results.matches.t.total/total_matches)|round(1, 'floor') }}%">
+                    <span>
+                        <strong>{{ results.matches.t.total }}</strong>
+                        ({{ (100*results.matches.t.total/total_matches)|round(1, 'floor') }}%)
+                    </span>
+                </div>
+                <div class="progress-bar bg-p" style="width: {{ (100*results.matches.p.total/total_matches)|round(1, 'floor') }}%">
+                    <span>
+                        <strong>{{ results.matches.p.total }}</strong>
+                        ({{ (100*results.matches.p.total/total_matches)|round(1, 'floor') }}%)
+                    </span>
+                </div>
+                <div class="progress-bar bg-z" style="width: {{ (100*results.matches.z.total/total_matches)|round(1, 'floor') }}%">
+                    <span>
+                        <strong>{{ results.matches.z.total }}</strong>
+                        ({{ (100*results.matches.z.total/total_matches)|round(1, 'floor') }}%)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if results.matches.p.total %}
+    <div class="row mb-1">
+        <div class="col-12 col-md-3 lead text-md-right">
+            vP
+        </div>
+        <div class="col-12 col-md-7 d-flex align-items-center">
+            <div class="progress w-100" style="height: 25px;">
+                <div class="progress-bar bg-secondary" style="width: {{ (100*results.matches.p.wins/results.matches.p.total)|round(1, 'floor') }}%">
+                    <span>
+                        <strong>{{ results.matches.p.wins }}-{{ results.matches.p.total - results.matches.p.wins}}</strong>
+                        ({{ (100*results.matches.p.wins/results.matches.p.total)|round(1, 'floor') }}%)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if results.matches.t.total %}
+    <div class="row mb-1">
+        <div class="col-12 col-md-3 lead text-md-right">
+            vT
+        </div>
+        <div class="col-12 col-md-7 d-flex align-items-center">
+            <div class="progress w-100" style="height: 25px;">
+                <div class="progress-bar bg-secondary" style="width: {{ (100*results.matches.t.wins/results.matches.t.total)|round(1, 'floor') }}%">
+                    <span>
+                        <strong>{{ results.matches.t.wins }}-{{ results.matches.t.total - results.matches.t.wins}}</strong>
+                        ({{ (100*results.matches.t.wins/results.matches.t.total)|round(1, 'floor') }}%)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if results.matches.z.total %}
+    <div class="row mb-1">
+        <div class="col-12 col-md-3 lead text-md-right">
+            vZ
+        </div>
+        <div class="col-12 col-md-7 d-flex align-items-center">
+            <div class="progress w-100" style="height: 25px;">
+                <div class="progress-bar bg-secondary" style="width: {{ (100*results.matches.z.wins/results.matches.z.total)|round(1, 'floor') }}%">
+                    <span>
+                        <strong>{{ results.matches.z.wins }}-{{ results.matches.z.total - results.matches.z.wins}}</strong>
+                        ({{ (100*results.matches.z.wins/results.matches.z.total)|round(1, 'floor') }}%)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

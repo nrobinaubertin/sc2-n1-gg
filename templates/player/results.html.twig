@@ -2,7 +2,7 @@
 {% set wins_matches = results.matches.z.wins + results.matches.p.wins + results.matches.t.wins %}
 {% set total_maps = results.maps.z.total + results.maps.p.total + results.maps.t.total %}
 {% set wins_maps = results.maps.z.wins + results.maps.p.wins + results.maps.t.wins %}
-<form class="mb-5" action="{{ base_url }}/results" method="get">
+<form class="mb-5 border-bottom" action="{{ base_url }}/results" method="get">
     <div class="row">
         <div class="col-12 col-lg-4">
             <div class="form-group">
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-12 col-lg-4">
             <div class="form-group border-lg-right">
-                <div class="lead">Opponent race</div>
+                <div class="lead mb-1">Opponent race</div>
                 <div class="container">
                     <div class="row">
                         <div class="col form-check">
@@ -62,7 +62,7 @@
         </div>
         <div class="col-12 col-lg-4">
             <div class="form-group">
-                <div class="lead">Match format</div>
+                <div class="lead mb-1">Match format</div>
                 <div class="container">
                     <div class="row">
                         <div class="col form-check">
@@ -90,20 +90,23 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Filter</button>
+    <div class="row">
+        <div class="form-group col-8 col-sm-5 col-md-4 col-lg-3">
+            <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+        </div>
     </div>
 </form>
+{% include 'player/stats.html.twig' %}
 {% if total_matches > 0 %}
     <div class="text-center">
         Under these filters, {{ player.tag }} is
         <strong>{{ wins_maps }}-{{ total_maps - wins_maps }}</strong>
-        <small class="text-muted">({{ (100 * wins_maps / total_maps)|round(1, 'floor') }}%)</small> in games and
+        <small class="text-muted">({{ (100 * wins_maps / total_maps)|round(1, 'floor') }}%)</small> in maps and
         <strong>{{ wins_matches }}-{{ total_matches - wins_matches }}</strong>
         <small class="text-muted">({{ (100 * wins_matches / total_matches)|round(1, 'floor') }}%)</small> in matches.
     </div>
     {% if results.events|length > 30 %}
-    <div class="text-center">
+    <div class="text-center mb-2">
         <img src="{{ asset('build/images/warning.png') }}" class="picto"/>
         Only the most recent 30 events are showed.
     </div>
