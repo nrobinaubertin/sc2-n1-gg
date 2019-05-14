@@ -323,11 +323,15 @@ class Player extends AbstractController
 
         foreach ($matches as $match) {
 
-            if (isset($options["group_by_event"]) && $options["group_by_event"]) {
+            if (
+                isset($options["group_by_event"])
+                && $options["group_by_event"]
+                && count($results["events"]) < 31
+            ) {
                 $event = $match->getEventObj();
                 if (!empty($event)) {
                     // create the event in the event list if it doesn't exists
-                    if (!array_key_exists($event->getId(), $results["events"])) {
+                    if (!isset($results["events"][$event->getId()])) {
                         $results["events"][$event->getId()] = [
                             "date" => $event->getEarliest(),
                             "name" => $event->getFullName(),
