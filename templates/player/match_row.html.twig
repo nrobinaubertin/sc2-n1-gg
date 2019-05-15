@@ -7,11 +7,11 @@
                 {% if match.sca > match.scb %} <strong> {% endif %}
                     <a href="/players/{{ match.pla.id}}" class="text-body">{{ match.pla.tag }}</a>
                 {% if match.sca > match.scb %} </strong> {% endif %}
-                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.pla.race, 'long': false} %}</span>
+                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.rca, 'long': false} %}</span>
             </span>
             <span class="score">{{ match.sca }} — {{ match.scb }}</span>
             <span class="text-left w-100 ml-1">
-                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.plb.race, 'long': false} %}</span>
+                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.rcb, 'long': false} %}</span>
                 {% if match.scb > match.sca %} <strong> {% endif %}
                     <a href="/players/{{ match.plb.id }}" class="text-body">{{ match.plb.tag }}</a>
                 {% if match.scb > match.sca %} </strong> {% endif %}
@@ -21,11 +21,11 @@
                 {% if match.scb > match.sca %} <strong> {% endif %}
                     <a href="/players/{{ match.plb.id }}" class="text-body">{{ match.plb.tag }}</a>
                 {% if match.scb > match.sca %} </strong> {% endif %}
-                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.plb.race, 'long': false} %}</span>
+                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.rcb, 'long': false} %}</span>
             </span>
             <span class="score">{{ match.scb }} — {{ match.sca }}</span>
             <span class="text-left w-100 ml-1">
-                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.pla.race, 'long': false} %}</span>
+                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.rca, 'long': false} %}</span>
                 {% if match.sca > match.scb %} <strong> {% endif %}
                     <a href="/players/{{ match.pla.id }}" class="text-body">{{ match.pla.tag }}</a>
                 {% if match.sca > match.scb %} </strong> {% endif %}
