@@ -36,18 +36,20 @@ chmod 755 -R sql
 # Launch containers:
 CURRENT_USER="$(id -u):$(id -g)" docker-compose up -d --force-recreate --build --renew-anon-volumes
 
-# wait a bit for postgres to init
-sleep 120
+if ! [ "$1" = "--fast" ]; then
+    # wait a bit for postgres to init
+    sleep 120
 
-# install backend dependencies
-docker exec -it sc2-n1-gg_exec_1 php bin/composer install
+    # install backend dependencies
+    docker exec -it sc2-n1-gg_exec_1 php bin/composer install
 
-# Build the app
-docker exec -it sc2-n1-gg_exec_1 yarn install
-docker exec -it sc2-n1-gg_exec_1 yarn encore production
+    # Build the app
+    docker exec -it sc2-n1-gg_exec_1 yarn install
+    docker exec -it sc2-n1-gg_exec_1 yarn encore production
 
-# Convert the database:
-#docker exec -it sc2-n1-gg_exec_1 php bin/console doc:sch:up --force
+    # Convert the database:
+    #docker exec -it sc2-n1-gg_exec_1 php bin/console doc:sch:up --force
+fi
 
 # Remove cache
 rm -rf var/cache/*

@@ -53,8 +53,8 @@ services:
       - nginx
     volumes:
       - "./:/app"
-    user: "${CURRENT_USER}"
     networks:
       sc2_api:
         ipv4_address: "172.20.0.9"
+    user: "${CURRENT_USER}"
 
