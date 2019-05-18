@@ -2,17 +2,7 @@
 {% block title %}{{ player.tag }}{% endblock %}
 {% block body %}
     <div class="container mt-5">
-        <a href="/" class="text-body title"><div class="display-4 text-center mb-3">SC2.N1.GG</div></a>
-        <form action="/" method="get" class="mb-5">
-            <div class="form-group">
-                <div class="input-group">
-                    <input name="search" type="text" class="form-control" placeholder="search for a player">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+        {% include 'player/header.html.twig' %}
         {% include 'player/nav.html.twig' %}
         <div clas="container">
         {% if nav_active == "results" %}

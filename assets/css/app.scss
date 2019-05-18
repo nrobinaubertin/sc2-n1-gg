@@ -101,3 +101,9 @@ body, html {
 .bg-t {
     background-color: #006fce;
 }
+
+#player_results {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+}

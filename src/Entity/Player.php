@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use App\Controller\PlayerSearchApi;
 
 /**
  * Player
@@ -12,8 +13,16 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
  * @ORM\Table(name="player")
  * @ORM\Entity
  * @ApiResource(
- *     collectionOperations={"get"},
- *     itemOperations={"get"}
+ *     itemOperations={"get"},
+ *     collectionOperations={
+ *         "get",
+ *         "search_player"={
+ *             "method"="GET",
+ *             "path"="/players/search",
+ *             "controller"=PlayerSearchApi::class,
+ *             "defaults"={"_api_receive"=false}
+ *         },
+ *     },
  * )
  */
 class Player

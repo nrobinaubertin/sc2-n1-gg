@@ -2,38 +2,12 @@
 {% import 'flags.html.twig' as flags %}
 {% block title %}sc2.n1.gg{% endblock %}
 {% block body %}
-<div class="page-container {% if not players %}h-100{% endif %}">
+<div class="page-container h-100">
     <div class="d-flex h-100 justify-content-center align-items-center">
-        <div class="col-12 col-md-8">
-            <a href="/" class="text-body title"><div class="display-4 text-center{% if players %} mt-5{% endif %} mb-3">SC2.N1.GG</div></a>
+        <div class="col-12 col-md-8 p-0">
+            <div class="display-4 text-center mb-3 mt-5"><a href="/" class="text-body title">SC2.N1.GG</a></div>
             <div class="container">
-                <form action="/" method="get" class="mb-3">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input name="search" type="text" class="form-control" value="{{ search }}" placeholder="search for a player">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                {% if players %}
-                <div class="lead">Results:</div>
-                    <div class="list-group">
-                    {% for player in players %}
-                        <a href="/players/{{ player.player.id }}" class="list-group-item list-group-item-action">
-                            {% include 'player/race.html.twig' with {'race': player.player.race, 'long': false} %}
-                            {{ player.player.tag }}
-                            {{ flags.getFlag(player.player.country) }}
-                            [{{ player.match_count }} matches]
-                        </a>
-                    {% endfor %}
-                    </div>
-                {% else %}
-                {% if search %}
-                    <div class="text-muted">No results</div>
-                {% endif %}
-                {% endif %}
+                {% include 'search_player.html.twig' %}
             </div>
         </div>
     </div>

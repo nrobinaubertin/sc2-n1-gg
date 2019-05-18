@@ -1,0 +1,54 @@
+<form id="player_search" action="/" method="get" class="mb-3">
+    <div class="form-group">
+        <input
+            name="search"
+            type="text"
+            autocomplete="off"
+            class="form-control"
+            value="{{ search|default('') }}"
+            placeholder="search for a player"
+        />
+    </div>
+</form>
+<div id="player_results" class="list-group"></div>
+<script>
+    window.race_icons = {
+        'Z': '{{ asset('build/images/z.svg') }}',
+        'P': '{{ asset('build/images/p.svg') }}',
+        'T': '{{ asset('build/images/t.svg') }}',
+        'R': '{{ asset('build/images/r.svg') }}',
+        'S': '{{ asset('build/images/r.svg') }}',
+    };
+
+    window.getPlayers = search => {
+        if (window.location.pathname == '/') {
+            history.replaceState({'search': search}, "", window.location.origin + window.location.pathname + '?search=' + search);
+        }
+        fetch('/api/players/search?search=' + search).then(r => r.json()).then(p => {
+            if (document.querySelector('#player_search input[name=search]').value != search) {
+                return;
+            }
+            document.getElementById('player_results').innerHTML = '';
+            p.map(pl => {
+                let a = document.createElement('a');
+                a.href = '/players/' + pl.id;
+                a.classList.add('list-group-item');
+                a.classList.add('list-group-item-action');
+                a.innerHTML = pl.tag + ' ' + pl.country + ' ' + '[' + pl.match_count + ' matches]';
+                race_icon = document.createElement('img');
+                race_icon.classList.add('picto');
+                race_icon.classList.add('mr-1');
+                race_icon.src = window.race_icons[pl.race];
+                a.prepend(race_icon);
+                document.getElementById('player_results').append(a);
+            });
+        });
+    };
+
+    document.querySelector('#player_search input[name=search]').addEventListener('input', e => window.getPlayers(e.target.value));
+
+    {% if search is defined and search %}
+    window.getPlayers('{{ search }}');
+    {% endif %}
+
+</script>
