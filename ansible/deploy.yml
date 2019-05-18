@@ -1,0 +1,148 @@
+- hosts: "{{ host }}"
+  remote_user: "{{ username }}"
+  become: yes
+  vars:
+    php_version: "7.3"
+  tasks:
+    - name: Install core packages
+      apt:
+        name:
+          - "apt-transport-https" # necessary for ansible (apt)
+          - "ca-certificates" # necessary for ansible (apt)
+          - "python-openssl" # needed for certificates generation with ansible
+          - "python-passlib" # necessary for ansible (htpasswd)
+          - "python3-apt" # necessary for ansible (apt)
+          - "python3-psycopg2" # necessary for ansible (postgresql)
+          - "rsync" # util
+          - "htop" # util
+          - "less" # util
+          - "time" # util
+          - "tmux" # util
+          - "wget" # util
+          - "bzip2" # util
+        state: "latest"
+        update_cache: yes
+    - name: Enable repositories
+      apt_repository:
+        repo: "{{ item }}"
+        state: "present"
+      with_items:
+        - "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" # postgresql
+        - "deb http://nginx.org/packages/debian stretch nginx" # nginx
+        - "deb https://packages.sury.org/php/ stretch main" # php sury
+        - "deb http://deb.debian.org/debian stretch-backports main" # certbot
+        - "deb https://dl.yarnpkg.com/debian/ stable main" # yarn
+    - name: Add repositories keys
+      apt_key:
+        url: "{{ item }}"
+        state: "present"
+      with_items:
+        - "https://www.postgresql.org/media/keys/ACCC4CF8.asc" # postgresql
+        - "https://nginx.org/keys/nginx_signing.key" # nginx
+        - "https://packages.sury.org/php/apt.gpg" # php sury
+        - "https://dl.yarnpkg.com/debian/pubkey.gpg" # yarn
+    - name: Install services
+      apt:
+        name:
+          - "yarn"
+          - "postgresql-11"
+          - "nginx"
+          - "php{{ php_version }}-common"
+          - "php{{ php_version }}-curl"
+          - "php{{ php_version }}-dev"
+          - "php{{ php_version }}-dom"
+          - "php{{ php_version }}-fpm"
+          - "php{{ php_version }}-gd"
+          - "php{{ php_version }}-iconv"
+          - "php{{ php_version }}-json"
+          - "php{{ php_version }}-mbstring"
+          - "php{{ php_version }}-mysql"
+          - "php{{ php_version }}-opcache"
+          - "php{{ php_version }}-soap"
+          - "php{{ php_version }}-tokenizer"
+          - "php{{ php_version }}-xml"
+          - "php{{ php_version }}-zip"
+        state: "latest"
+        update_cache: yes
+    - name: Copy config files
+      copy:
+        src: "{{ item.split(':')[0] }}"
+        dest: "{{ item.split(':')[1] }}"
+        owner: "root"
+        group: "root"
+        mode: 0644
+        force: yes
+      with_items:
+        - "ansible/nginx.conf:/etc/nginx/nginx.conf"
+    - name: Fix php_version in nginx config
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: "<PHP_VERSION>"
+        replace: "{{ php_version }}"
+    - name: Fix website_domain in nginx config
+      replace:
+        path: "/etc/nginx/nginx.conf"
+        regexp: "<WEBSITE_DOMAIN>"
+        replace: "{{ website_domain }}"
+    - name: Install sc2-n1-gg
+      unarchive:
+        src: "https://github.com/nrobinaubertin/sc2-n1-gg/archive/master.tar.gz"
+        dest: "/var/www/sc2-n1-gg"
+        remote_src: yes
+        owner: "www-data"
+        group: "www-data"
+        mode: 0755
+        extra_opts:
+          - "--strip-component=1"
+    - name: Copy env.local file
+      copy:
+        src: "ansible/env.local"
+        dest: "/var/www/sc2-n1-gg/.env.local"
+        owner: "www-data"
+        group: "www-data"
+        mode: 0644
+    - name: Remove symfony cache
+      command: "rm -rf /var/www/sc2-n1-gg/var/cache"
+    - name: Remove nginx cache
+      command: "rm -rf /tmp/nginx_cache"
+    - name: Start services
+      systemd:
+        service: "{{ item }}"
+        enabled: yes
+        state: "restarted"
+      with_items:
+        - "postgresql"
+        - "nginx"
+        - "php{{ php_version }}-fpm"
+    - name: Install certbot
+      apt:
+        name:
+          - certbot
+          - python-certbot-nginx
+        state: latest
+        default_release: "stretch-backports"
+    - name: Activate first time certificates
+      command: "certbot --nginx -d {{ website_domain }} --agree-tos -m {{ certbot_email }} -n certonly"
+      args:
+        creates: "/etc/letsencrypt/live/{{ website_domain }}"
+    - name: Add certificate renewal cron job
+      cron:
+        name: "certbot renew"
+        minute: "{{ 59 | random(seed=ansible_hostname) }}"
+        hour: "7"
+        day: "1"
+        job: "certbot renew --post-hook 'nginx -s reload'"
+    - name: Import data with update_data script
+      shell: "/var/www/sc2-n1-gg/scripts/update_data.sh"
+      args:
+        creates: "/data"
+    - name: Add update_data cron job
+      cron:
+        name: "update data"
+        minute: "{{ 59 | random(seed=ansible_hostname) }}"
+        hour: "9"
+        job: "POSTGRES_PASSWD={{ postgres_passwd }} /var/www/sc2-n1-gg/scripts/update_data.sh"
+    - name: Compile frontend
+      shell: "yarn encore production"
+      args:
+        chdir: "/var/www/sc2-n1-gg"

@@ -4,6 +4,7 @@ composer.phar
 aligulac.sql
 .bash_history
 sql/
+inventory.yml
 ###< global ###
 
 ###> symfony/framework-bundle ###

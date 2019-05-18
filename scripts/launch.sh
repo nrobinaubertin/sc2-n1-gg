@@ -2,6 +2,12 @@
 
 set -x
 
+# go to the root of the git repository
+cdroot() {
+    ! [ -e ".git" ] && [ "$(pwd)" != "/" ] && cd .. && cdroot || return 0
+}
+
+cdroot
 mkdir sql
 
 db_filename="aligulac-$(date +%Y-%m-%d)"
@@ -26,20 +32,12 @@ if ! [ -f sql/"$db_filename.sql" ] && ! [ "$1" = "--no-update-db" ]; then
     sed -i '/CREATE INDEX/d' sql/"$db_filename.sql"
     sed -i '/REVOKE ALL/d' sql/"$db_filename.sql"
     sed -i '/GRANT ALL/d' sql/"$db_filename.sql"
-    #sed -i '/^SET/d' sql/"$db_filename.sql"
-    #sed -i '/OWNED BY/d' sql/"$db_filename.sql"
-    #sed -i '1s/^/USE starcraft2;/' sql/"$db_filename.sql"
-    #sed -i '1s/^/CREATE DATABASE starcraft2;/' sql/"$db_filename.sql"
-    #sed -i 's/"group"/`group`/' sql/"$db_filename.sql"
-    #sed -i 's/"end"/`end`/' sql/"$db_filename.sql"
-    #sed -i 's/CREATE TABLE match/CREATE TABLE `match`/' sql/"$db_filename.sql"
-    #sed -i 's/"position"/`position`/' sql/"$db_filename.sql"
 fi
 
 
 # prepare the postgres initialization directory
 cp docker/init.sql sql/init.sql
-cp docker/convert.sql sql/convert.sql
+cp scripts/convert.sql sql/convert.sql
 chmod 755 -R sql
 
 # Launch containers:
