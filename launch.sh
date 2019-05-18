@@ -19,14 +19,23 @@ if ! [ -f sql/"$db_filename.sql" ] && ! [ "$1" = "--no-update-db" ]; then
     # unzip it
     gunzip sql/"$db_filename.sql.gz"
     
-    # Remove non data stuff from the dump
-    sed -i '/DROP/d' sql/"$db_filename.sql"
+    # Remove unwanted/uncompatible stuff from the dump
+    sed -i '/^DROP/d' sql/"$db_filename.sql"
     sed -i '/ALTER TABLE/d' sql/"$db_filename.sql"
     sed -i '/ADD CONSTRAINT/d' sql/"$db_filename.sql"
     sed -i '/CREATE INDEX/d' sql/"$db_filename.sql"
     sed -i '/REVOKE ALL/d' sql/"$db_filename.sql"
     sed -i '/GRANT ALL/d' sql/"$db_filename.sql"
+    #sed -i '/^SET/d' sql/"$db_filename.sql"
+    #sed -i '/OWNED BY/d' sql/"$db_filename.sql"
+    #sed -i '1s/^/USE starcraft2;/' sql/"$db_filename.sql"
+    #sed -i '1s/^/CREATE DATABASE starcraft2;/' sql/"$db_filename.sql"
+    #sed -i 's/"group"/`group`/' sql/"$db_filename.sql"
+    #sed -i 's/"end"/`end`/' sql/"$db_filename.sql"
+    #sed -i 's/CREATE TABLE match/CREATE TABLE `match`/' sql/"$db_filename.sql"
+    #sed -i 's/"position"/`position`/' sql/"$db_filename.sql"
 fi
+
 
 # prepare the postgres initialization directory
 cp docker/init.sql sql/init.sql
@@ -34,7 +43,7 @@ cp docker/convert.sql sql/convert.sql
 chmod 755 -R sql
 
 # Launch containers:
-CURRENT_USER="$(id -u):$(id -g)" docker-compose up -d --force-recreate --build --renew-anon-volumes
+CURRENT_USER="$(id -u):$(id -g)" docker-compose up -d --force-recreate --build --renew-anon-volumes --remove-orphans
 
 if ! [ "$1" = "--fast" ]; then
     # wait a bit for postgres to init

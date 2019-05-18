@@ -57,3 +57,10 @@ UPDATE match as m SET eventobj_id = (
     SELECT id FROM event WHERE id = m.eventobj_id AND "type" = 'round'
 );
 DELETE FROM event WHERE "type" = 'round';
+
+-- Remove unused tables
+DROP TABLE eventadjacency;
+DROP TABLE message;
+DROP TABLE period;
+DROP TABLE rating;
+DROP TABLE story;
