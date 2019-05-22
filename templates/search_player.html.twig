@@ -5,7 +5,7 @@
                 {% if player %}
                     <input data-pid="{{ loop.index }}" type="hidden" value="{{ player }}" name="player{{ loop.index }}"/>
                     <div
-                        onclick="removePlayerBadge({{ loop.index }}, {{ id }})"
+                        onclick="removePlayerBadge({{ loop.index }}, '{{ id }}')"
                         data-pid="{{ loop.index }}"
                         class="player-badge badge badge-secondary"
                     >

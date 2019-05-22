@@ -84,13 +84,13 @@
         Found {{ total_matches }} matches.
         {% endif %}
     </div>
-    {% if results.events|length > 30 %}
+    {% if total_matches > results.match_grouped %}
     <div class="text-center mb-2">
         <img src="{{ asset('build/images/warning.png') }}" class="picto"/>
-        Only the most recent 30 events are showed.
+        Only the most recent {{ results.match_grouped }} matches are displayed.
     </div>
     {% endif %}
-    {% include 'results/matches.html.twig' with {'matches': false, 'events': results.events|slice(0, 30)} %}
+    {% include 'results/matches.html.twig' with {'matches': false, 'events': results.events} %}
 {% else %}
     <div class="lead">No match found.</div>
 {% endif %}
