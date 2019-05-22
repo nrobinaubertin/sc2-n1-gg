@@ -1,5 +1,5 @@
 - hosts: "{{ host }}"
-  remote_user: "{{ username }}"
+  remote_user: "{{ remote_user }}"
   become: yes
   vars:
     php_version: "7.3"
@@ -12,16 +12,28 @@
           - "python-openssl" # needed for certificates generation with ansible
           - "python-passlib" # necessary for ansible (htpasswd)
           - "python3-apt" # necessary for ansible (apt)
-          - "python3-psycopg2" # necessary for ansible (postgresql)
+          - "python-psycopg2" # necessary for ansible (postgresql)
           - "rsync" # util
           - "htop" # util
           - "less" # util
           - "time" # util
           - "tmux" # util
           - "wget" # util
+          - "unzip" # util
           - "bzip2" # util
+          - "net-tools" # util
         state: "latest"
         update_cache: yes
+    - name: Add repositories keys
+      apt_key:
+        url: "{{ item }}"
+        state: "present"
+      with_items:
+        - "https://www.postgresql.org/media/keys/ACCC4CF8.asc" # postgresql
+        - "https://nginx.org/keys/nginx_signing.key" # nginx
+        - "https://packages.sury.org/php/apt.gpg" # php sury
+        - "https://dl.yarnpkg.com/debian/pubkey.gpg" # yarn
+        - "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" # nodejs
     - name: Enable repositories
       apt_repository:
         repo: "{{ item }}"
@@ -32,21 +44,14 @@
         - "deb https://packages.sury.org/php/ stretch main" # php sury
         - "deb http://deb.debian.org/debian stretch-backports main" # certbot
         - "deb https://dl.yarnpkg.com/debian/ stable main" # yarn
-    - name: Add repositories keys
-      apt_key:
-        url: "{{ item }}"
-        state: "present"
-      with_items:
-        - "https://www.postgresql.org/media/keys/ACCC4CF8.asc" # postgresql
-        - "https://nginx.org/keys/nginx_signing.key" # nginx
-        - "https://packages.sury.org/php/apt.gpg" # php sury
-        - "https://dl.yarnpkg.com/debian/pubkey.gpg" # yarn
+        - "deb https://deb.nodesource.com/node_12.x stretch main" # nodejs
     - name: Install services
       apt:
         name:
           - "yarn"
           - "postgresql-11"
           - "nginx"
+          - "nodejs"
           - "php{{ php_version }}-common"
           - "php{{ php_version }}-curl"
           - "php{{ php_version }}-dev"
@@ -62,6 +67,7 @@
           - "php{{ php_version }}-tokenizer"
           - "php{{ php_version }}-xml"
           - "php{{ php_version }}-zip"
+          - "php{{ php_version }}-pgsql"
         state: "latest"
         update_cache: yes
     - name: Copy config files
@@ -73,7 +79,7 @@
         mode: 0644
         force: yes
       with_items:
-        - "ansible/nginx.conf:/etc/nginx/nginx.conf"
+        - "nginx.conf:/etc/nginx/nginx.conf"
     - name: Fix php_version in nginx config
       replace:
         path: "/etc/nginx/nginx.conf"
@@ -84,6 +90,13 @@
         path: "/etc/nginx/nginx.conf"
         regexp: "<WEBSITE_DOMAIN>"
         replace: "{{ website_domain }}"
+    - name: Create sc2-n1-gg directory
+      file:
+        dest: "/var/www/sc2-n1-gg"
+        group: "www-data"
+        owner: "www-data"
+        mode: 0755
+        state: "directory"
     - name: Install sc2-n1-gg
       unarchive:
         src: "https://github.com/nrobinaubertin/sc2-n1-gg/archive/master.tar.gz"
@@ -96,11 +109,21 @@
           - "--strip-component=1"
     - name: Copy env.local file
       copy:
-        src: "ansible/env.local"
+        src: "env.local"
         dest: "/var/www/sc2-n1-gg/.env.local"
         owner: "www-data"
         group: "www-data"
         mode: 0644
+    - name: Inject postgres_passwd in .env.local
+      replace:
+        path: "/var/www/sc2-n1-gg/.env.local"
+        regexp: "<POSTGRES_PASSWD>"
+        replace: "{{ postgres_passwd }}"
+    - name: Inject app_secret in .env.local
+      replace:
+        path: "/var/www/sc2-n1-gg/.env.local"
+        regexp: "<APP_SECRET>"
+        replace: "{{ app_secret }}"
     - name: Remove symfony cache
       command: "rm -rf /var/www/sc2-n1-gg/var/cache"
     - name: Remove nginx cache
@@ -114,6 +137,14 @@
         - "postgresql"
         - "nginx"
         - "php{{ php_version }}-fpm"
+    - name: Create postgres user
+      postgresql_user:
+        db: postgres
+        name: postgres
+        password: "{{ postgres_passwd }}"
+        expires: "infinity"
+        priv: ALL
+      when: false
     - name: Install certbot
       apt:
         name:
@@ -142,6 +173,10 @@
         minute: "{{ 59 | random(seed=ansible_hostname) }}"
         hour: "9"
         job: "POSTGRES_PASSWD={{ postgres_passwd }} /var/www/sc2-n1-gg/scripts/update_data.sh"
+    - name: Install node_modules
+      shell: "yarn"
+      args:
+        chdir: "/var/www/sc2-n1-gg"
     - name: Compile frontend
       shell: "yarn encore production"
       args:

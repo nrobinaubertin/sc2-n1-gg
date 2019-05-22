@@ -5,6 +5,7 @@ aligulac.sql
 .bash_history
 sql/
 inventory.yml
+*.retry
 ###< global ###
 
 ###> symfony/framework-bundle ###
