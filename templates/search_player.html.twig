@@ -1,54 +1,155 @@
-<form id="player_search" action="/" method="get" class="mb-3">
-    <div class="form-group">
-        <input
-            name="search"
-            type="text"
-            autocomplete="off"
-            class="form-control"
-            value="{{ search|default('') }}"
-            placeholder="search for a player"
-        />
+<div class="input-group">
+    <div id="search_bar_{{ id }}" class="search-bar form-control">
+        {% if players is defined and players %}
+            {% for player in players %}
+                {% if player %}
+                    <input data-pid="{{ loop.index }}" type="hidden" value="{{ player }}" name="player{{ loop.index }}"/>
+                    <div
+                        onclick="removePlayerBadge({{ loop.index }}, {{ id }})"
+                        data-pid="{{ loop.index }}"
+                        class="player-badge badge badge-secondary"
+                    >
+                        {{ player }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <div id="search_{{ id }}" class="search" contentEditable="true" data-ph="search for a player"></div>
     </div>
-</form>
-<div id="player_results" class="list-group"></div>
+    {% if search_button is defined and search_button %}
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" onclick="search('{{ id }}')" type="button">Search</button>
+    </div>
+    {% endif %}
+</div>
+<div id="player_results_{{ id }}" class="player-results list-group"></div>
 <script>
-    window.race_icons = {
-        'Z': '{{ asset('build/images/z.svg') }}',
-        'P': '{{ asset('build/images/p.svg') }}',
-        'T': '{{ asset('build/images/t.svg') }}',
-        'R': '{{ asset('build/images/r.svg') }}',
-        'S': '{{ asset('build/images/r.svg') }}',
+    search = id => {
+        let players = Array.from(document.querySelectorAll('#search_bar_' + id + ' .player-badge')).map(e => e.innerHTML);
+        if (players.length == 1) {
+            window.location.href = "/players/" + players[0].split(' ')[1];
+        }
+        if (players.length > 1) {
+            window.location.href = players.reduce((acc, curr) => {
+                return acc + encodeURIComponent(curr + "\n");
+            }, "/results/search/?players=");
+        }
+    }
+
+    getFlag = flag => {
+        if (window.flag_icons[flag]) {
+            flag_icon = document.createElement('img');
+            flag_icon.src = window.flag_icons[flag];
+        } else {
+            flag_icon = document.createElement('span');
+            flag_icon.innerHTML = flag;
+        }
+        flag_icon.classList.add('mr-1');
+        return flag_icon;
+    }
+
+    addPlayerBadge = (ptag, pid, id) => {
+        let badge = document.createElement('div');
+        badge.innerHTML = ptag + ' ' + pid;
+        badge.classList.add('player-badge');
+        badge.classList.add('badge');
+        badge.dataset.pid = pid;
+        badge.addEventListener('click', _ => removePlayerBadge(pid, id));
+        document.getElementById('search_bar_' + id).prepend(badge);
+        document.getElementById('search_' + id).innerHTML = "";
+        document.getElementById('player_results_' + id).innerHTML = '';
+        let pinput = document.createElement('input');
+        pinput.type = 'hidden';
+        pinput.value = ptag + ' ' + pid;
+        pinput.name = 'player' + pid;
+        pinput.dataset.pid = pid;
+        document.getElementById('search_bar_' + id).prepend(pinput);
+        document.getElementById('search_' + id).focus();
     };
 
-    window.getPlayers = search => {
-        if (window.location.pathname == '/') {
-            history.replaceState({'search': search}, "", window.location.origin + window.location.pathname + '?search=' + search);
+    removePlayerBadge = (pid, id) => {
+        let pi = document.querySelector('#search_bar_' + id + ' input[data-pid="' + pid + '"]');
+        if (pi) {
+            pi.outerHTML = '';
         }
+        let pb = document.querySelector('#search_bar_' + id + ' .player-badge[data-pid="' + pid + '"]');
+        if (pb) {
+            pb.outerHTML = '';
+        }
+    };
+
+    getPlayers = (search, id) => {
         fetch('/api/players/search?search=' + search).then(r => r.json()).then(p => {
-            if (document.querySelector('#player_search input[name=search]').value != search) {
+            if (document.getElementById('search_' + id).innerText.trim() != search) {
                 return;
             }
-            document.getElementById('player_results').innerHTML = '';
+            document.getElementById('player_results_' + id).innerHTML = '';
             p.map(pl => {
                 let a = document.createElement('a');
-                a.href = '/players/' + pl.id;
+                a.addEventListener('click', _ => addPlayerBadge(pl.tag, pl.id, id));
+                a.dataset.pid = pl.id;
+                a.dataset.ptag = pl.tag;
                 a.classList.add('list-group-item');
                 a.classList.add('list-group-item-action');
-                a.innerHTML = pl.tag + ' ' + pl.country + ' ' + '[' + pl.match_count + ' matches]';
+                a.innerHTML = pl.tag + ' [' + pl.match_count + ' matches] ';
                 race_icon = document.createElement('img');
                 race_icon.classList.add('picto');
                 race_icon.classList.add('mr-1');
                 race_icon.src = window.race_icons[pl.race];
                 a.prepend(race_icon);
-                document.getElementById('player_results').append(a);
+                a.append(window.getFlag(pl.country));
+                document.getElementById('player_results_' + id).append(a);
             });
         });
     };
 
-    document.querySelector('#player_search input[name=search]').addEventListener('input', e => window.getPlayers(e.target.value));
+    // add the first player found
+    addLuckyPlayer = (search, id) => {
+        let playerList = Array.from(document.querySelectorAll('#player_results_' + id + ' .list-group-item'));
+        if (playerList.length) {
+            addPlayerBadge(playerList[0].dataset.ptag, playerList[0].dataset.pid, id);
+            return;
+        }
+        fetch('/api/players/search?search=' + search).then(r => r.json()).then(p => {
+            if (p.length) {
+                addPlayerBadge(p[0].tag, p[0].id, id);
+            }
+        });
+    };
+    
+    document.getElementById('search_{{ id }}').addEventListener('keydown', e => {
+        // if the user hits enter
+        if (e.keyCode == 13) {
+            e.stopPropagation();
+            e.preventDefault();
+            setTimeout(() => {
+                let searchText = e.target.innerText.trim();
+                if (searchText) {
+                    addLuckyPlayer(searchText, '{{ id }}');
+                }
+            }, 10);
+            return;
+        }
+        setTimeout(() => {
+            let raw = e.target.innerHTML;
+            let searchText = e.target.innerText.trim();
+            if (!searchText) {
+                document.getElementById('player_results_{{ id }}').innerHTML = '';
+                return;
+            }
+            setTimeout(() => {
+                if (document.getElementById('search_{{ id }}').innerHTML == raw) {
+                    // if the user hits space
+                    if (e.keyCode == 32) {
+                        addLuckyPlayer(searchText, '{{ id }}');
+                    } else {
+                        getPlayers(searchText, '{{ id }}');
+                    }
+                }
+            }, 300);
+        }, 10);
+    });
 
-    {% if search is defined and search %}
-    window.getPlayers('{{ search }}');
-    {% endif %}
+    document.getElementById('search_{{ id }}').focus();
 
 </script>

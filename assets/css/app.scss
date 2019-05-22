@@ -102,8 +102,30 @@ body, html {
     background-color: #006fce;
 }
 
-#player_results {
+.player-results {
     max-height: 50vh;
     overflow-y: auto;
     margin-bottom: 2rem;
+}
+
+.search-bar {
+    display: flex;
+
+    .search {
+        width: 100%;
+        &:empty {
+            &::before {
+                content:attr(data-ph);
+                color: grey;
+            }
+        }
+    }
+
+    .player-badge {
+        padding: 6px;
+        margin-right: 0.5rem;
+        color: #fff;
+        background-color: $gray-600;
+        flex-shrink: 0;
+    }
 }

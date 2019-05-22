@@ -32,7 +32,7 @@ class PlayerSearchApi extends AbstractController
                 WHERE lower(p.tag) LIKE lower(:search)
                 GROUP BY p
                 ORDER BY match_count DESC'
-            )->setParameter('search', '%'.$search.'%')->execute();
+            )->setMaxResults(50)->setParameter('search', '%'.$search.'%')->execute();
         } else {
             $players = [];
         }

@@ -2,13 +2,14 @@
 {% block title %}{{ player.tag }}{% endblock %}
 {% block body %}
     <div class="container mt-5">
-        {% include 'player/header.html.twig' %}
+        {% include 'header.html.twig' %}
         {% include 'player/nav.html.twig' %}
         <div clas="container">
-        {% if nav_active == "results" %}
-            {% include 'player/results.html.twig' %}
-        {% else %}
-            {% include 'player/summary.html.twig' %}
-        {% endif %}
+            {% if nav_active == "results" %}
+                {% include 'player/results.html.twig' %}
+            {% else %}
+                {% include 'player/summary.html.twig' %}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
