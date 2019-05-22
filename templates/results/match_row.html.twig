@@ -1,0 +1,21 @@
+<tr>
+    <td class="d-flex justify-content-between">
+        <div class="table-col d-none d-sm-block text-left">{{ match.date|date('Y-m-d') }}</div>
+        <div class="d-flex justify-content-center w-100">
+            <span class="text-right w-100 mr-1">
+                {% if match.sca > match.scb %} <strong> {% endif %}
+                    <a href="/players/{{ match.pla.id}}" class="text-body">{{ match.pla.tag }}</a>
+                {% if match.sca > match.scb %} </strong> {% endif %}
+                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.rca, 'long': false} %}</span>
+            </span>
+            <span class="score">{{ match.sca }} — {{ match.scb }}</span>
+            <span class="text-left w-100 ml-1">
+                <span class="d-none d-md-inline">{% include 'player/race.html.twig' with {'race': match.rcb, 'long': false} %}</span>
+                {% if match.scb > match.sca %} <strong> {% endif %}
+                    <a href="/players/{{ match.plb.id }}" class="text-body">{{ match.plb.tag }}</a>
+                {% if match.scb > match.sca %} </strong> {% endif %}
+            </span>
+        </div>
+        <div class="table-col d-none d-sm-block text-right">{% if match.offline == true %}<span title="offline">&#x1f50c;</span>{% else %}<span title="online">&#x1f30d;</span>{% endif %}</div>
+    </td>
+</tr>

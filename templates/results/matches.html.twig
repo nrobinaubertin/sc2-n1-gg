@@ -1,0 +1,21 @@
+<table class="table table-sm table-hover mb-2">
+    <tbody>
+        {% if events %}
+            {% for event in events %}
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" class="text-center">{{ event.name }}</th>
+                    </tr>
+                </thead>
+                {% for match in event.matches %}
+                    {% include 'results/match_row.html.twig' with {'match': match} %}
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+        {% if matches %}
+            {% for match in matches %}
+                {% include 'results/match_row.html.twig' with {'match': match} %}
+                {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
