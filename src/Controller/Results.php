@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Earnings as EarningsEntity;
+use App\Entity\Match as MatchEntity;
+use App\Entity\Player as PlayerEntity;
+use App\Service\Statistics;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Player as PlayerEntity;
-use App\Entity\Match as MatchEntity;
-use App\Entity\Earnings as EarningsEntity;
-use Doctrine\ORM\EntityManagerInterface;
 
 /*
  * /results => timeline of matches
@@ -20,10 +21,12 @@ use Doctrine\ORM\EntityManagerInterface;
 class Results extends AbstractController
 {
     private $em;
+    private $stats;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, Statistics $stats)
     {
         $this->em = $em;
+        $this->stats = $stats;
     }
 
 	/**
@@ -172,7 +175,7 @@ class Results extends AbstractController
         }
 
         $matches = $query->execute();
-        $results = $this->getMatchesResults($matches, ["group_by_event" => true]);
+        $results = $this->stats->getMatchesResults($matches, null, ["group_by_event" => true]);
 
         return $this->render('results/search.html.twig', [
             'total_matches' => count($matches),
@@ -185,125 +188,4 @@ class Results extends AbstractController
             'events' => $events,
         ]);
 	}
-    
-    private function getMatchesResults(array $matches, array $options = []): array
-    {
-        $results = [
-            "matches" => [
-                "p" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "t" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "z" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "r" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "s" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-            ],
-            "maps" => [
-                "p" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "t" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "z" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "r" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-                "s" => [
-                    "wins" => 0,
-                    "total" => 0,
-                ],
-            ],
-            "matches_month" => [],
-            "events" => [],
-            "last" => null,
-            "first" => null,
-        ];
-
-        if (empty($matches)) {
-            return $results;
-        }
-
-        $results["last"] = $matches[0];
-        $results["first"] = end($matches);
-        $results["recent_matches"] = array_slice($matches, 0, 10);
-        $results["total_matches"] = count($matches);
-
-        // Prepare $matches_month keys
-        //$end = $matches[0]->getDate();
-        //$start = $curr = new \Datetime(end($matches)->getDate()->format('Y-m').'-01');
-        //while ($curr->getTimestamp() < $end->getTimestamp()) {
-        //    $results["matches_month"][$curr->getTimestamp()*1000] = [
-        //        'total_matches' => 0,
-        //        'total_wins' => 0,
-        //    ];
-        //    $curr->modify('+1 month');
-        //}
-
-        foreach ($matches as $match) {
-
-            if (
-                isset($options["group_by_event"])
-                && $options["group_by_event"]
-                && count($results["events"]) < 31
-            ) {
-                $event = $match->getEventObj();
-                if (!empty($event)) {
-                    // create the event in the event list if it doesn't exists
-                    if (!isset($results["events"][$event->getId()])) {
-                        $results["events"][$event->getId()] = [
-                            "date" => $event->getEarliest(),
-                            "name" => $event->getFullName(),
-                            "matches" => [],
-                        ];
-                    }
-                    $results["events"][$event->getId()]["matches"][] = $match;
-                }
-            }
-
-            // aggregate statistics about matches
-            //$datestring = strtotime($match->getDate()->format('Y-m').'-01')*1000;
-            //$results["matches_month"][$datestring]['total_matches'] += 1;
-            //if ($match->getPla()->getId() == $player->getId()) {
-            //    $race = strtolower($match->getPlb()->getRace());
-            //    $results["maps"][$race]["total"] += $match->getSca() + $match->getScb();
-            //    $results["maps"][$race]["wins"] += $match->getSca();
-            //    $results["matches"][$race]["total"]++;
-            //    if ($match->getSca() > $match->getScb()) {
-            //        $results["matches"][$race]["wins"]++;
-            //        $results["matches_month"][$datestring]['total_wins'] += 1;
-            //    }
-            //} else {
-            //    $race = strtolower($match->getPla()->getRace());
-            //    $results["maps"][$race]["total"] += $match->getSca() + $match->getScb();
-            //    $results["maps"][$race]["wins"] += $match->getSca();
-            //    $results["matches"][$race]["total"]++;
-            //    if ($match->getSca() < $match->getScb()) {
-            //        $results["matches"][$race]["wins"]++;
-            //        $results["matches_month"][$datestring]['total_wins'] += 1;
-            //    }
-            //}
-        }
-
-        return $results;
-    }
 }
