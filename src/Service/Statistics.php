@@ -71,15 +71,17 @@ class Statistics
         $results["recent_matches"] = array_slice($matches, 0, 10);
         $results["total_matches"] = count($matches);
 
-        // Prepare $matches_month keys
-        $end = $matches[0]->getDate();
-        $start = $curr = new \Datetime(end($matches)->getDate()->format('Y-m').'-01');
-        while ($curr->getTimestamp() < $end->getTimestamp()) {
-            $results["matches_month"][$curr->getTimestamp()*1000] = [
-                'total_matches' => 0,
-                'total_wins' => 0,
-            ];
-            $curr->modify('+1 month');
+        if (isset($options["matches_month"]) && $options["matches_month"]) {
+            // Prepare $matches_month keys
+            $end = $matches[0]->getDate();
+            $start = $curr = new \Datetime(end($matches)->getDate()->format('Y-m').'-01');
+            while ($curr->getTimestamp() < $end->getTimestamp()) {
+                $results["matches_month"][$curr->getTimestamp()*1000] = [
+                    'total_matches' => 0,
+                    'total_wins' => 0,
+                ];
+                $curr->modify('+1 month');
+            }
         }
 
         // count matches to avoid speding too much time on event grouping
@@ -109,9 +111,10 @@ class Statistics
                 }
             }
 
-            // aggregate statistics about matches
-            $datestring = strtotime($match->getDate()->format('Y-m').'-01')*1000;
-            $results["matches_month"][$datestring]['total_matches'] += 1;
+            if (isset($options["matches_month"]) && $options["matches_month"]) {
+                $datestring = strtotime($match->getDate()->format('Y-m').'-01')*1000;
+                $results["matches_month"][$datestring]['total_matches'] += 1;
+            }
 
             if ($player) {
                 if ($match->getPla()->getId() == $player->getId()) {
@@ -121,7 +124,9 @@ class Statistics
                     $results["matches"][$race]["total"]++;
                     if ($match->getSca() > $match->getScb()) {
                         $results["matches"][$race]["wins"]++;
-                        $results["matches_month"][$datestring]['total_wins'] += 1;
+                        if (isset($options["matches_month"]) && $options["matches_month"]) {
+                            $results["matches_month"][$datestring]['total_wins'] += 1;
+                        }
                     }
                 } else {
                     $race = strtolower($match->getPla()->getRace());
@@ -130,7 +135,9 @@ class Statistics
                     $results["matches"][$race]["total"]++;
                     if ($match->getSca() < $match->getScb()) {
                         $results["matches"][$race]["wins"]++;
-                        $results["matches_month"][$datestring]['total_wins'] += 1;
+                        if (isset($options["matches_month"]) && $options["matches_month"]) {
+                            $results["matches_month"][$datestring]['total_wins'] += 1;
+                        }
                     }
                 }
             }
