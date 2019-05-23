@@ -274,7 +274,7 @@ class Player extends AbstractController
             WHERE e.player = :id'
         )->setParameter('id', $id)->execute()[0]['total_earnings'];
 
-        $results = $this->getMatchesResults($matches, $player);
+        $results = $this->stats->getMatchesResults($matches, $player);
 
         if (!empty($player->getBirthday())) {
             $player_age = $player->getBirthday()->diff(new \DateTime())->format('%a');
