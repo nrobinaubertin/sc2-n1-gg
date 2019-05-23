@@ -234,7 +234,11 @@ class Player extends AbstractController
         }
 
         $matches = $query->execute();
-        $results = $this->stats->getMatchesResults($matches, $player, ["group_by_event" => true]);
+        $results = $this->stats->getMatchesResults($matches, [
+            "group_by_event" => true,
+            "player" => $player,
+        ]);
+
 
 		return $this->render('player/base.html.twig', [
 			'player' => $player,
@@ -274,7 +278,10 @@ class Player extends AbstractController
             WHERE e.player = :id'
         )->setParameter('id', $id)->execute()[0]['total_earnings'];
 
-        $results = $this->stats->getMatchesResults($matches, $player, ["matches_month" => true]);
+        $results = $this->stats->getMatchesResults($matches, [
+            "matches_month" => true,
+            "player" => $player,
+        ]);
 
         if (!empty($player->getBirthday())) {
             $player_age = $player->getBirthday()->diff(new \DateTime())->format('%a');

@@ -175,7 +175,9 @@ class Results extends AbstractController
         }
 
         $matches = $query->execute();
-        $results = $this->stats->getMatchesResults($matches, null, ["group_by_event" => true]);
+        $results = $this->stats->getMatchesResults($matches, [
+            "group_by_event" => true,
+        ]);
 
         return $this->render('results/search.html.twig', [
             'total_matches' => count($matches),

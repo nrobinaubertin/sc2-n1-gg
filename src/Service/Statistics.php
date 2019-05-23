@@ -9,8 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class Statistics
 {
-    public function getMatchesResults(array $matches, PlayerEntity $player = null, array $options = []): array
+    public function getMatchesResults(array $matches, array $options = []): array
     {
+        $player = isset($options["player"]) ? $options["player"] : null;
         $results = [
             "matches" => [
                 "p" => [
@@ -139,6 +140,21 @@ class Statistics
                             $results["matches_month"][$datestring]['total_wins'] += 1;
                         }
                     }
+                }
+            } else {
+                // aggregate statistics without player focus
+                $racea = strtolower($match->getPla()->getRace());
+                $raceb = strtolower($match->getPlb()->getRace());
+                $results["maps"][$racea]["total"] += $match->getSca() + $match->getScb();
+                $results["maps"][$raceb]["total"] += $match->getSca() + $match->getScb();
+                $results["matches"][$racea]["total"]++;
+                $results["matches"][$raceb]["total"]++;
+                if ($match->getSca() > $match->getScb()) {
+                    $results["maps"][$racea]["wins"] += $match->getSca();
+                    $results["matches"][$racea]["wins"]++;
+                } else {
+                    $results["maps"][$raceb]["wins"] += $match->getScb();
+                    $results["matches"][$raceb]["wins"]++;
                 }
             }
         }
