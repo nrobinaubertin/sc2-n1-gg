@@ -64,13 +64,6 @@ class Match
     private $rcb;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="treated", type="boolean", nullable=false)
-     */
-    private $treated;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="event", type="string", length=200, nullable=false)
@@ -191,18 +184,6 @@ class Match
     public function setRcb(string $rcb): self
     {
         $this->rcb = $rcb;
-
-        return $this;
-    }
-
-    public function getTreated(): ?bool
-    {
-        return $this->treated;
-    }
-
-    public function setTreated(bool $treated): self
-    {
-        $this->treated = $treated;
 
         return $this;
     }
