@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -x
+set -xe
 
 db_filename="aligulac-$(date +%Y-%m-%d)"
 storage="/data"
@@ -13,8 +13,8 @@ if ! [ -f "$storage/$db_filename.sql" ]; then
     # remove old zipped downloads
     rm "$storage/*.sql.gz"
 
-    # archive previous databases
-    bzip2 "$storage/*.sql"
+    # remove previous databases
+    rm "$storage/*.sql"
 
     # Download Aligulac's database
     wget -O "$storage/$db_filename.sql.gz" "http://static.aligulac.com/aligulac.sql.gz"
