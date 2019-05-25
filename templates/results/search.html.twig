@@ -75,6 +75,7 @@
     </form>
 </div>
 <div class="container">
+{% include 'results/stats.html.twig' %}
 {% if total_matches > 0 %}
     <div class="text-center mb-2">
         {% if total_matches == 1000 %}
@@ -84,10 +85,10 @@
         Found {{ total_matches }} matches.
         {% endif %}
     </div>
-    {% if total_matches > results.match_grouped %}
+    {% if total_matches > (results.match_grouped + results.match_without_event) %}
     <div class="text-center mb-2">
         <img src="{{ asset('build/images/warning.png') }}" class="picto"/>
-        Only the most recent {{ results.match_grouped }} matches are displayed.
+        Only the most recent {{ (results.match_grouped + results.match_without_event) }} matches are displayed.
     </div>
     {% endif %}
     {% include 'results/matches.html.twig' with {'matches': false, 'events': results.events} %}
