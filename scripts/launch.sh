@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -x
+set -xe
 
 # go to the root of the git repository
 cdroot() {
@@ -8,23 +8,23 @@ cdroot() {
 }
 
 cdroot
-mkdir sql
+mkdir -p sql
 
 db_filename="aligulac-$(date +%Y-%m-%d)"
 
 # only redownload the db if todays db doesn't exists
 if ! [ -f sql/"$db_filename.sql" ] && ! [ "$1" = "--no-update-db" ]; then
-    
+
     rm ./sql/*.sql.gz
 
     # Download Aligulac's database
     wget -O sql/"$db_filename.sql.gz" "http://static.aligulac.com/aligulac.sql.gz"
-    
+
     rm ./sql/*.sql
 
     # unzip it
     gunzip sql/"$db_filename.sql.gz"
-    
+
     # Remove unwanted/uncompatible stuff from the dump
     sed -i '/^DROP/d' sql/"$db_filename.sql"
     sed -i '/ALTER TABLE/d' sql/"$db_filename.sql"
