@@ -87,10 +87,13 @@ class Statistics
 
         // count matches to avoid speding too much time on event grouping
         $match_grouped = 0;
+        $match_ungrouped = 0;
+        $match_without_event = 0;
         foreach ($matches as $match) {
             if (
                 isset($options["group_by_event"])
                 && $options["group_by_event"]
+                && ($match_ungrouped < 100) // if we go over 100 ungrouped matches, we can assume that we will not group anymore
             ) {
                 $event = $match->getEventObj();
                 if (!empty($event)) {
@@ -108,7 +111,17 @@ class Statistics
                     if (isset($results["events"][$event->getId()])) {
                         $results["events"][$event->getId()]["matches"][] = $match;
                         $match_grouped++;
+                    } else {
+                        // the match is ungrouped when we go over 100 matches grouped and his group doesn't exist
+                        $match_ungrouped++;
                     }
+                } else {
+                    $results["events"][uniqid("no_event_")] = [
+                        "date" => $match->getDate(),
+                        "name" => "Unknown event",
+                        "matches" => [$match],
+                    ];
+                    $match_without_event++;
                 }
             }
 
@@ -160,6 +173,8 @@ class Statistics
         }
 
         $results["match_grouped"] = $match_grouped;
+        $results["match_ungrouped"] = $match_ungrouped;
+        $results["match_without_event"] = $match_without_event;
 
         return $results;
     }
