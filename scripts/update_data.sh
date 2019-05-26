@@ -21,7 +21,7 @@ if ! [ -f "$storage/$db_filename.sql" ]; then
 
     # unzip it
     gunzip "$storage/$db_filename.sql.gz"
-    
+
     # Remove unwanted/uncompatible stuff from the dump
     sed -i '/^DROP/d' "$storage/$db_filename.sql"
     sed -i '/ALTER TABLE/d' "$storage/$db_filename.sql"
@@ -29,7 +29,7 @@ if ! [ -f "$storage/$db_filename.sql" ]; then
     sed -i '/CREATE INDEX/d' "$storage/$db_filename.sql"
     sed -i '/REVOKE ALL/d' "$storage/$db_filename.sql"
     sed -i '/GRANT ALL/d' "$storage/$db_filename.sql"
-    
+
     # Remove revious data
     psql -d "postgres://postgres:${POSTGRES_PASSWD}@127.0.0.1:5432" < "/var/www/sc2-n1-gg/scripts/clean.sql"
 

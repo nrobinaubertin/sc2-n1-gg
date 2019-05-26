@@ -172,7 +172,7 @@
         name: "update data"
         minute: "{{ 59 | random(seed=ansible_hostname) }}"
         hour: "9"
-        job: "POSTGRES_PASSWD={{ postgres_passwd }} /var/www/sc2-n1-gg/scripts/update_data.sh"
+        job: "POSTGRES_PASSWD={{ postgres_passwd }} /var/www/sc2-n1-gg/scripts/update_data.sh >> /var/log/update_data.log"
     - name: Install node_modules
       shell: "yarn"
       args:
