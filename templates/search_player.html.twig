@@ -126,6 +126,10 @@
                 let searchText = e.target.innerText.trim();
                 if (searchText) {
                     addLuckyPlayer(searchText, '{{ id }}');
+                {% if search_button is defined and search_button %}
+                } else {
+                    search('{{ id }}');
+                {% endif %}
                 }
             }, 10);
             return;
