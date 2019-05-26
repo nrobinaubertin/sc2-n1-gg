@@ -14,8 +14,6 @@ UPDATE "player" AS p
     FROM player_aliases
     WHERE p.id = player_aliases.player_id;
 
-UPDATE "player" SET aliases = CONCAT(tag, ',', aliases) WHERE aliases IS NOT NULL;
-
 -- Remove unused tables
 DROP TABLE eventadjacency;
 DROP TABLE message;

@@ -29,7 +29,8 @@ class PlayerSearchApi extends AbstractController
                 'SELECT p AS player, COUNT(m.id) AS match_count
                 FROM App\Entity\Player AS p
                 JOIN App\Entity\Match as m WITH m.pla = p OR m.plb = p
-                WHERE lower(p.aliases) LIKE lower(:search)
+                WHERE lower(p.tag) LIKE lower(:search)
+                OR lower(p.aliases) LIKE lower(:search)
                 GROUP BY p
                 ORDER BY match_count DESC'
             )->setMaxResults(50)->setParameter('search', '%'.$search.'%')->execute();
