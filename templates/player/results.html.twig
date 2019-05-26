@@ -12,21 +12,25 @@
         </div>
         <div class="col-12 col-lg-4">
             <div class="form-group">
-                <div class="lead">Opponent</div>
-                <input name="opponent" type="text" class="form-control-inline" value="{{ opponents }}" placeholder="Space separated values">
-            </div>
-        </div>
-        <div class="col-12 col-lg-4">
-            <div class="form-group">
                 <div class="lead">Date range</div>
                 <input name="after" type="date" class="form-control-inline mr-2" value="{{ after }}">
                 <label for="before" class="mr-2">&rarr;</label>
                 <input name="before" type="date" class="form-control-inline" value="{{ before }}">
             </div>
         </div>
+        <div class="col-12 col-lg-4">
+            <div class="form-group border-lg-right pr-5">
+                <div class="lead">Match type</div>
+                <select class="form-control" name="match_type">
+                    <option{% if match_type != "online" and match_type != "offline" %} selected="selected"{% endif %}>all</option>
+                    <option{% if match_type == "offline" %} selected="selected"{% endif %}>offline</option>
+                    <option{% if match_type == "online" %} selected="selected"{% endif %}>online</option>
+                </select>
+            </div>
+        </div>
     </div>
     <div class="row">
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div class="form-group border-lg-right">
                 <div class="lead mb-1">Opponent race</div>
                 <div class="container">
@@ -50,17 +54,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-4">
-            <div class="form-group border-lg-right pr-5">
-                <div class="lead">Match type</div>
-                <select class="form-control" name="match_type">
-                    <option{% if match_type != "online" and match_type != "offline" %} selected="selected"{% endif %}>all</option>
-                    <option{% if match_type == "offline" %} selected="selected"{% endif %}>offline</option>
-                    <option{% if match_type == "online" %} selected="selected"{% endif %}>online</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div class="form-group">
                 <div class="lead mb-1">Match format</div>
                 <div class="container">
@@ -87,6 +81,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="form-group">
+                <div class="lead">Opponents</div>
+                {% include 'search_player.html.twig' with {"players": players, "id": "form"} %}
             </div>
         </div>
     </div>

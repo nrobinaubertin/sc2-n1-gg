@@ -173,13 +173,27 @@ class Player extends AbstractController
             $event_query = '1 = 1';
         }
 
-        $opponent_query = '1 = 0';
-        if ($opponents = $request->get('opponent')) {
-            foreach (explode(' ', $opponents) as $k=>$opponent) {
-                $opponent_query .= ' OR lower(oo.tag) LIKE lower(:opponent'.$k.')';
+        $playersIds = [];
+        $players = [];
+        foreach($request->query->keys() as $key) {
+            if (strpos($key, "player") === 0) {
+                $playersIds[] = intval(explode(' ', $request->query->get($key))[1]);
+                $players[] = $request->query->get($key);
             }
+        }
+
+        // compatibility with aligulac
+        if ($request->get('players')) {
+            $players = explode("\n", $request->get('players'));
+            $playersIds = array_map(function ($e) {
+                return !empty($e) ? intval(explode(' ', $e)[1]) : null;
+            }, $players);
+        }
+
+        if (!empty($playersIds)) {
+            $player_query = 'm.pla IN (:players_ids) OR m.plb IN (:players_ids)';
         } else {
-            $opponent_query = '1 = 1';
+            $player_query = '1 = 1';
         }
 
         $query = $this->em->createQuery(
@@ -194,7 +208,6 @@ class Player extends AbstractController
                         FROM App\Entity\Player AS ob
                         WHERE ob.id = m.plb
                         AND ob.race IN (:opponent_races)
-                        AND ('.str_replace('oo', 'ob', $opponent_query).')
                     )
                 )
                 OR (
@@ -204,10 +217,10 @@ class Player extends AbstractController
                         FROM App\Entity\Player AS oa
                         WHERE oa.id = m.pla
                         AND oa.race IN (:opponent_races)
-                        AND ('.str_replace('oo', 'oa', $opponent_query).')
                     )
                 )
             )
+            AND ('.$player_query.')
             AND ('.$match_type_query.')
             AND ('.$match_format_query.')
             AND ('.$date_query.')
@@ -227,10 +240,8 @@ class Player extends AbstractController
                 $query->setParameter('event'.$k, '%'.$event.'%');
             }
         }
-        if (!empty($opponents)) {
-            foreach (explode(' ', $opponents) as $k=>$opponent) {
-                $query->setParameter('opponent'.$k, '%'.$opponent.'%');
-            }
+        if (!empty($playersIds)) {
+            $query->setParameter('players_ids', $playersIds);
         }
 
         $matches = $query->execute();
@@ -251,7 +262,7 @@ class Player extends AbstractController
             'after' => $after,
             'before' => $before,
             'events' => $events,
-            'opponents' => $opponents,
+            'players' => $players,
 		]);
     }
 
