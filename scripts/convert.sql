@@ -1,6 +1,21 @@
 -- group is a reserved keyword and this doesn't play nice with doctrine
 ALTER TABLE "group" RENAME TO team;
 
+-- add aliases on player
+ALTER TABLE player ADD aliases TEXT DEFAULT NULL;
+COMMENT ON COLUMN player.aliases IS '(DC2Type:simple_array)';
+WITH player_aliases AS (
+    SELECT player_id, STRING_AGG(name, ', ') AS aliases
+    FROM alias
+    GROUP BY player_id
+)
+UPDATE "player" AS p
+    SET aliases = player_aliases.aliases
+    FROM player_aliases
+    WHERE p.id = player_aliases.player_id;
+
+UPDATE "player" SET aliases CONCAT(tag, ', ', aliases) WHERE aliases IS NOT NULL;
+
 -- Remove unused tables
 DROP TABLE eventadjacency;
 DROP TABLE message;
@@ -20,6 +35,18 @@ ALTER TABLE "match" DROP COLUMN "treated";
 ALTER TABLE "match" DROP COLUMN "period_id";
 ALTER TABLE "event" DROP COLUMN "lft";
 ALTER TABLE "event" DROP COLUMN "rgt";
+ALTER TABLE "event" DROP "noprint";
+ALTER TABLE "event" DROP "tlpd_id";
+ALTER TABLE "event" DROP "tlpd_db";
+ALTER TABLE "event" DROP "tl_thread";
+ALTER TABLE "event" DROP "idx";
+ALTER TABLE "event" DROP "wcs_year";
+ALTER TABLE "event" DROP "wcs_tier";
+ALTER TABLE "team" DROP "scoreak";
+ALTER TABLE "team" DROP "scorepl";
+ALTER TABLE "team" DROP "is_team";
+ALTER TABLE "team" DROP "is_manual";
+ALTER TABLE "team" DROP "meanrating";
 
 -- Add primary keys for the used tables
 ALTER TABLE "player" ADD PRIMARY KEY (id);

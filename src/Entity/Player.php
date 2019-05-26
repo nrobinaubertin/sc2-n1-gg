@@ -107,6 +107,11 @@ class Player
      */
     private $romanizedName;
 
+    /**
+     * @ORM\Column(name="aliases", type="simple_array", nullable=true)
+     */
+    private $aliases;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -229,6 +234,17 @@ class Player
     {
         $this->romanizedName = $romanizedName;
 
+        return $this;
+    }
+
+    public function getAliases(): ?array
+    {
+        return $this->aliases;
+    }
+
+    public function setAliases(array $aliases): self
+    {
+        $this->aliases = $aliases;
         return $this;
     }
 }
