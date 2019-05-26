@@ -5,7 +5,7 @@ ALTER TABLE "group" RENAME TO team;
 ALTER TABLE player ADD aliases TEXT DEFAULT NULL;
 COMMENT ON COLUMN player.aliases IS '(DC2Type:simple_array)';
 WITH player_aliases AS (
-    SELECT player_id, STRING_AGG(name, ', ') AS aliases
+    SELECT player_id, STRING_AGG(name, ',') AS aliases
     FROM alias
     GROUP BY player_id
 )
@@ -14,7 +14,7 @@ UPDATE "player" AS p
     FROM player_aliases
     WHERE p.id = player_aliases.player_id;
 
-UPDATE "player" SET aliases CONCAT(tag, ', ', aliases) WHERE aliases IS NOT NULL;
+UPDATE "player" SET aliases = CONCAT(tag, ',', aliases) WHERE aliases IS NOT NULL;
 
 -- Remove unused tables
 DROP TABLE eventadjacency;
@@ -23,6 +23,7 @@ DROP TABLE period;
 DROP TABLE rating;
 DROP TABLE story;
 DROP TABLE alias;
+DROP TABLE earnings;
 
 -- Remove unused columns
 ALTER TABLE "player" DROP COLUMN "dom_val";
@@ -52,7 +53,6 @@ ALTER TABLE "team" DROP "meanrating";
 -- Add primary keys for the used tables
 ALTER TABLE "player" ADD PRIMARY KEY (id);
 ALTER TABLE "match" ADD PRIMARY KEY (id);
-ALTER TABLE "earnings" ADD PRIMARY KEY (id);
 ALTER TABLE "event" ADD PRIMARY KEY (id);
 
 -- order matches players to always have the lower id on player a
@@ -69,7 +69,6 @@ UPDATE "match" SET
 -- Add some indexes
 CREATE INDEX ON "match" (pla_id);
 CREATE INDEX ON "match" (plb_id);
-CREATE INDEX ON "earnings" (player_id);
 CREATE INDEX ON "player" (race);
 CREATE INDEX ON "player" (tag);
 CREATE INDEX ON "match" ("offline");

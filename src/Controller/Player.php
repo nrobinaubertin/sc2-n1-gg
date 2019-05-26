@@ -272,12 +272,6 @@ class Player extends AbstractController
 
         $qb = $this->em->createQueryBuilder();
         
-        $total_earnings = $this->em->createQuery(
-            'SELECT SUM(e.earnings) as total_earnings
-            FROM App\Entity\Earnings as e
-            WHERE e.player = :id'
-        )->setParameter('id', $id)->execute()[0]['total_earnings'];
-
         $results = $this->stats->getMatchesResults($matches, [
             "matches_month" => true,
             "player" => $player,
@@ -294,7 +288,6 @@ class Player extends AbstractController
             'nav_active' => 'summary',
             'base_url' => '/players/' . $player->getId(),
             'player_age' => $player_age ?? null,
-            'total_earnings' => $total_earnings,
 		]);
     }
 }

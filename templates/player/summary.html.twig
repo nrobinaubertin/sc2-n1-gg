@@ -31,10 +31,10 @@
                         <td>{{ player.birthday|date('Y-m-d') }} <small>({{ player_age }} years)</small></td>
                     </tr>
                     {% endif %}
-                    {% if player.lpName %}
+                    {% if player.aliases %}
                     <tr>
-                        <th scope="col">Liquipedia</th>
-                        <td><a href="https://liquipedia.net/starcraft2/{{ player.lpName }}">https://liquipedia.net/starcraft2/{{ player.lpName }}</a></td>
+                        <th scope="col">Aliases</th>
+                        <td>{{ player.aliases|join(', ') }}</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -43,6 +43,12 @@
         <div class="col">
             <table class="table table-striped table-sm">
                 <tbody>
+                    {% if player.lpName %}
+                    <tr>
+                        <th scope="col">Liquipedia</th>
+                        <td><a href="https://liquipedia.net/starcraft2/{{ player.lpName }}">https://liquipedia.net/starcraft2/{{ player.lpName }}</a></td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <th scope="col">First Match</th>
                         <td>{{ results.first.date|date('Y-m-d') }}</td>
@@ -50,10 +56,6 @@
                     <tr>
                         <th scope="col">Last Match</th>
                         <td>{{ results.last.date|date('Y-m-d') }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col">Total earnings</th>
-                        <td>${{ total_earnings|number_format(0, "", ",") }}</td>
                     </tr>
                     <tr>
                         <th scope="col">Matches/Maps played</th>
