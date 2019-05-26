@@ -96,8 +96,8 @@
         </div>
     </div>
 </form>
-{% include 'player/stats.html.twig' %}
 {% if total_matches > 0 %}
+    {% include 'player/stats.html.twig' %}
     <div class="text-center">
         Under these filters, {{ player.tag }} is
         <strong>{{ wins_maps }}-{{ total_maps - wins_maps }}</strong>
