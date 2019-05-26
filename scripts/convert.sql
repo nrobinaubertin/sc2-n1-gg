@@ -22,6 +22,7 @@ DROP TABLE message;
 DROP TABLE period;
 DROP TABLE rating;
 DROP TABLE story;
+DROP TABLE alias;
 
 -- Remove unused columns
 ALTER TABLE "player" DROP COLUMN "dom_val";
