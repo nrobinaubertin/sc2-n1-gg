@@ -49,8 +49,8 @@
 }
 
 body, html {
+    font-family: 'Source Sans Pro', sans-serif;
     height: 100%;
-    font-family: 'Nunito', sans-serif;
 }
 
 .picto {
@@ -75,7 +75,8 @@ body, html {
 }
 
 .title {
-    font-family: 'Audiowide', cursive;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
     &:hover {
         text-decoration: none;
     }
@@ -84,8 +85,8 @@ body, html {
 .footer {
     background: transparent;
     position: absolute;
-    bottom: 0;
-    padding: 10px 30px;
+    top: 0;
+    padding: 10px 15px;
     text-align: right;
     width: 100%;
 }
@@ -106,6 +107,12 @@ body, html {
     max-height: 50vh;
     overflow-y: auto;
     margin-bottom: 2rem;
+}
+
+.landing-wallpaper {
+    position: fixed;
+    height: 100%;
+    opacity: .3;
 }
 
 .search-bar {
