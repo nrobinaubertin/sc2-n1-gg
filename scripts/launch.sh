@@ -15,12 +15,10 @@ db_filename="aligulac-$(date +%Y-%m-%d)"
 # only redownload the db if todays db doesn't exists
 if ! [ -f sql/"$db_filename.sql" ] && ! [ "$1" = "--no-update-db" ]; then
 
-    rm ./sql/*.sql.gz
+    rm -f ./sql/*
 
     # Download Aligulac's database
     wget -O sql/"$db_filename.sql.gz" "http://static.aligulac.com/aligulac.sql.gz"
-
-    rm ./sql/*.sql
 
     # unzip it
     gunzip sql/"$db_filename.sql.gz"

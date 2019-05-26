@@ -3,9 +3,9 @@ api_platform:
     description: 'Starcraft 2 data'
     version: '0.1.0'
     show_webby: false
-    enable_swagger: true
-    enable_swagger_ui: true
-    enable_docs: true
+    enable_swagger: false
+    enable_swagger_ui: false
+    enable_docs: false
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     formats:
