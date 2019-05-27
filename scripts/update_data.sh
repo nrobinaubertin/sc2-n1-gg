@@ -11,10 +11,14 @@ mkdir -p "$storage"
 if ! [ -f "$storage/$db_filename.sql" ]; then
 
     # remove old zipped downloads
-    rm -f "$storage/*.sql.gz"
+    rm -f "$storage"/*.sql.gz
 
-    # remove previous databases
-    rm -f "$storage/*.sql"
+    # remove the oldest file
+    # TODO: use find instead of ls
+    rm -f "$storage/$(ls -t "$storage" | tail -n1)"
+
+    # archive previous databases
+    bzip2 "$storage"/*.sql
 
     # Download Aligulac's database
     wget -O "$storage/$db_filename.sql.gz" "http://static.aligulac.com/aligulac.sql.gz"
